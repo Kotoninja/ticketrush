@@ -9,15 +9,18 @@ def generate_reference_id() -> str:
 
 
 class Organization(BaseModel):
-    created_by = models.ForeignKey(to=CustomUser, on_delete=models.SET_NULL, null=True)
+    created_by = models.ForeignKey(to=CustomUser, on_delete=models.SET_NULL, null=True, related_name="organizations")
     name = models.CharField(max_length=255)
     reference_id = models.CharField(
-        default=generate_reference_id(),
         editable=False,
         unique=True,
-        null=True,
         max_length=8,
     )
 
+    def save(self, *args, **kwargs):
+        if not self.reference_id:
+            self.reference_id = generate_reference_id()
+        super().save(*args, **kwargs)
+
     def __str__(self) -> str:
-        return f"{self.name} / ref_id:{str(self.reference_id)[:8]}"
+        return f"{self.name} / ref_id:{str(self.reference_id)}"
