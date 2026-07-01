@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "common",
     "user",
     "organization",
+    "venue",
     # Third party-packages
     "rest_framework",
 ]
