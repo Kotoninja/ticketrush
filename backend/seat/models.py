@@ -4,7 +4,11 @@ from hall.models import Hall
 
 
 class Seat(BaseModel):
-    CATEGORY_LISTS = [("standart", "Standart"), ("comfort", "Comfort"), ("vip", "Vip")]
+    CATEGORY_LISTS: list[tuple[str, str]] = [
+        ("standart", "Standart"),
+        ("comfort", "Comfort"),
+        ("vip", "Vip"),
+    ]
     hall = models.ForeignKey(to=Hall, on_delete=models.PROTECT)
     category = models.CharField(default="Standart", choices=CATEGORY_LISTS)
     number = models.PositiveSmallIntegerField(null=True)
