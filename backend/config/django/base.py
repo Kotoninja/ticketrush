@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "organization",
     "venue",
     "hall",
+    "seat",
     # Third party-packages
     "rest_framework",
 ]
