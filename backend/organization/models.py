@@ -9,8 +9,13 @@ def generate_reference_id() -> str:
 
 
 class Organization(BaseModel):
-    created_by = models.ForeignKey(to=CustomUser, on_delete=models.SET_NULL, null=True, related_name="organizations")
-    name = models.CharField(max_length=255)
+    created_by = models.ForeignKey(
+        to=CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="organizations",
+    )
+    name = models.CharField(max_length=255, unique=True)
     reference_id = models.CharField(
         editable=False,
         unique=True,
