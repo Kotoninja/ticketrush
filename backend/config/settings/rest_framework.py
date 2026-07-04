@@ -1,6 +1,6 @@
 from rest_framework import DJANGO_DURATION_FORMAT, ISO_8601
 
-DEFAULTS = {
+REST_FRAMEWORK = {
     # Base API policies
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
@@ -26,7 +26,7 @@ DEFAULTS = {
     "DEFAULT_PAGINATION_CLASS": None,
     "DEFAULT_FILTER_BACKENDS": [],
     # Schema
-    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.openapi.AutoSchema",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     # Throttling
     "DEFAULT_THROTTLE_RATES": {
         "user": None,
