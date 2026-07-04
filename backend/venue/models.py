@@ -4,7 +4,9 @@ from organization.models import Organization
 
 
 class Venue(BaseModel):
-    created_by = models.ForeignKey(to=Organization, on_delete=models.PROTECT, null=True, related_name="venues")
+    created_by = models.ForeignKey(
+        to=Organization, on_delete=models.PROTECT, null=True, related_name="venues"
+    )
     description = models.CharField(max_length=400)
     name = models.CharField(max_length=50)
     adress = models.CharField(max_length=100)
@@ -18,4 +20,3 @@ class Venue(BaseModel):
     def feedbacks(self) -> float: ...
     @property
     def rating(self) -> int: ...
-    
