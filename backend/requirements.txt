@@ -4,6 +4,7 @@ Django==6.0.6
 django-environ==0.14.0
 djangorestframework==3.17.1
 drf-spectacular==0.29.0
+drf-standardized-errors==0.16.0
 inflection==0.5.1
 jsonschema==4.26.0
 jsonschema-specifications==2025.9.1

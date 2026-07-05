@@ -49,7 +49,7 @@ REST_FRAMEWORK = {
     "VIEW_NAME_FUNCTION": "rest_framework.views.get_view_name",
     "VIEW_DESCRIPTION_FUNCTION": "rest_framework.views.get_view_description",
     # Exception handling
-    "EXCEPTION_HANDLER": "rest_framework.views.exception_handler",
+    "EXCEPTION_HANDLER": "drf_standardized_errors.handler.exception_handler",
     "NON_FIELD_ERRORS_KEY": "non_field_errors",
     # Testing
     "TEST_REQUEST_RENDERER_CLASSES": [

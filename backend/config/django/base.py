@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     "session",
     # Third party-packages
     "rest_framework",
-    "drf_spectacular"
+    "drf_spectacular",
+    "drf_standardized_errors",
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,4 @@ AUTH_USER_MODEL = "user.CustomUser"
 
 from config.settings.rest_framework import *
 from config.settings.drf_spectacular import *
+from config.settings.drf_standartized_errors import *
