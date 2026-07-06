@@ -1,5 +1,6 @@
-from .models import Venue
 from rest_framework import viewsets
+
+from .models import Venue
 from .serializers import VenueSerializer
 
 
