@@ -1,35 +1,24 @@
-# Use the official Python runtime image
 FROM python:3.14-slim
 
-# Create the app directory
-RUN mkdir /app
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-# Set the working directory inside the container
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 WORKDIR /app
 
-# Set environment variables 
-# Prevents Python from writing pyc files to disk
-ENV PYTHONDONTWRITEBYTECODE=1
-#Prevents Python from buffering stdout and stderr
-ENV PYTHONUNBUFFERED=1 
+COPY requirements.txt .
+RUN uv pip install -r requirements.txt --system
 
-RUN apt-get update && apt-get install -y\
-    libpq-dev
+COPY . .
 
-# Upgrade pip
-RUN pip install --upgrade pip 
+RUN useradd --create-home appuser
+USER appuser
 
-# Copy the Django project  and install dependencies
-COPY requirements.txt  /app/
-
-# run this command to install all dependencies 
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the Django project to the container
-COPY . /app/
-
-# Expose the Django port
 EXPOSE 8000
 
-# Run Django’s development server
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
