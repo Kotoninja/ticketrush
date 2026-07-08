@@ -31,7 +31,7 @@ class SeatSession(BaseModel):
         ("pending", "Pending"),
         ("busy", "Busy"),
     ]
-    event_session = models.ForeignKey(to=EventSession, on_delete=models.PROTECT, related_name="seats")
+    event_session = models.ForeignKey(to=EventSession, on_delete=models.CASCADE, related_name="seats")
     seat = models.ForeignKey(to=Seat, on_delete=models.PROTECT)
     status = models.CharField(choices=SEAT_STATUS, default="free")
     price = models.DecimalField(max_digits=4, decimal_places=2)
