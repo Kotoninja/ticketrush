@@ -41,4 +41,5 @@ urlpatterns = [
     ),  # Drf-spectacular Optional UI
     # My app
     path("api/venue/", include("venue.urls")),
+    path("api/session/", include("session.urls")),
 ]
