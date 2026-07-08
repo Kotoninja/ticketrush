@@ -6,4 +6,4 @@ from .models import EventSession
 class EventSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventSession
-        fields = "__all__"
+        exclude = ["created_at","updated_at"]
