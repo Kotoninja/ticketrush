@@ -14,6 +14,8 @@ class Seat(BaseModel):
     number = models.PositiveSmallIntegerField(null=True)
     coordinates = models.JSONField(blank=True, null=True)
 
+    # add UniqueConstraint
+
     def __str__(self) -> str:
         hall_name = self.hall.number if self.hall else "No Hall"
         return f"Hall - {hall_name} / {self.category} / num - {self.number} / {self.coordinates}"
