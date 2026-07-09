@@ -45,6 +45,10 @@ class SeatSession(BaseModel):
     status = models.CharField(choices=SEAT_STATUS, default="free")
     price = models.DecimalField(max_digits=4, decimal_places=2)
 
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     class Meta:
         constraints = [
             models.UniqueConstraint(

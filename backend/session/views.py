@@ -20,9 +20,7 @@ class EventSessionAPI(viewsets.ModelViewSet):
 
     @transaction.atomic
     def perform_create(self, serializer: EventSessionWriteSerializer):
-        self.instance = attach_all_places_to_event_session(
-            event_session_instance=serializer.save()
-        )
+        self.instance = serializer.save()
 
     def list(self, request):
         serializer = self.get_serializer(self.get_queryset(), many=True)
