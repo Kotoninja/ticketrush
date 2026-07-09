@@ -10,7 +10,7 @@ from rest_framework.test import APIClient
 from seat.models import Seat
 
 from session.models import EventSession, SeatSession
-
+from django.utils import timezone
 
 class EventSessionAPITestCase(TestCase):
     def setUp(self):
@@ -47,7 +47,7 @@ class EventSessionAPITestCase(TestCase):
         self.event_session = EventSession.objects.create(
             event=self.event,
             hall=self.hall,
-            timestamp="2026-07-09T10:00:00Z",
+            timestamp=timezone.now() + timezone.timedelta(seconds=5),
         )
 
     def test_list_event_sessions(self):

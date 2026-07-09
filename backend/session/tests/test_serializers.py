@@ -1,4 +1,5 @@
 import datetime
+from datetime import timedelta
 from decimal import Decimal
 
 from django.test import TestCase
@@ -8,6 +9,8 @@ from seat.models import Seat
 
 from session.models import EventSession, SeatSession
 from session.serializers import EventSessionReadSerializer, EventSessionWriteSerializer
+
+from django.utils import timezone
 
 
 class EventSessionSerializerTest(TestCase):
@@ -34,7 +37,8 @@ class EventSessionSerializerTest(TestCase):
 
         # Create event session
         self.event_session = EventSession.objects.create(
-            event=self.event, hall=self.hall, timestamp="2026-07-09T10:00:00Z"
+            event=self.event, hall=self.hall,             timestamp=timezone.now() + timezone.timedelta(seconds=5),
+
         )
 
         # Create seats
@@ -77,7 +81,7 @@ class EventSessionSerializerTest(TestCase):
         valid_data = {
             "event": self.event.id,
             "hall": self.hall.id,
-            "timestamp": "2026-07-10T10:00:00Z",
+            "timestamp": timezone.now() + timezone.timedelta(seconds=5),
         }
         serializer = EventSessionWriteSerializer(data=valid_data)
         self.assertTrue(serializer.is_valid())
@@ -93,7 +97,7 @@ class EventSessionSerializerTest(TestCase):
         invalid_data = {
             "event": self.event.id,
             "hall": "not_a_number",
-            "timestamp": "2026-07-10T10:00:00Z",
+            "timestamp": timezone.now() + timezone.timedelta(seconds=5),
         }
         serializer = EventSessionWriteSerializer(data=invalid_data)
         self.assertFalse(serializer.is_valid())

@@ -8,6 +8,7 @@ from seat.models import Seat
 
 from session.models import EventSession, SeatSession
 from session.services import attach_all_places_to_event_session
+from django.utils import timezone
 
 
 class EventSessionServicesTest(TestCase):
@@ -33,7 +34,9 @@ class EventSessionServicesTest(TestCase):
 
         # Create event session
         self.event_session = EventSession.objects.create(
-            event=self.event, hall=self.hall, timestamp="2026-07-09T10:00:00Z"
+            event=self.event,
+            hall=self.hall,
+            timestamp=timezone.now() + timezone.timedelta(seconds=5),
         )
 
         # Create seats

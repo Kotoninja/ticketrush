@@ -1,13 +1,14 @@
 from datetime import timedelta
 from decimal import Decimal
 
-from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from django.db.models import ProtectedError
 from django.test import TestCase
 from django.utils import timezone
 from event.models import Event
 from hall.models import Hall, Venue
+from django.core.exceptions import ValidationError as DjangoValidationError
+from rest_framework.exceptions import ValidationError as DRFValidationError
 from seat.models import Seat
 
 from ..models import EventSession, SeatSession
@@ -38,12 +39,14 @@ class EventSessionModelTest(TestCase):
 
         # Create event session
         self.event_session = EventSession.objects.create(
-            event=self.event, hall=self.hall, timestamp=timezone.now()
+            event=self.event,
+            hall=self.hall,
+            timestamp=timezone.now() + timezone.timedelta(seconds=5),
         )
 
     def test_create_event_session_success(self):
         """Test successful event session creation"""
-        timestamp = timezone.now()
+        timestamp = timezone.now() + timezone.timedelta(seconds=5)
         event_session = EventSession.objects.create(
             event=self.event, hall=self.hall, timestamp=timestamp
         )
@@ -63,14 +66,14 @@ class EventSessionModelTest(TestCase):
     def test_event_session_unique_constraint(self):
         """Test that unique constraint prevents duplicate sessions"""
 
-        timestamp = timezone.now()
+        timestamp = timezone.now() + timezone.timedelta(seconds=6)
         # Create first session
         EventSession.objects.create(
             event=self.event, hall=self.hall, timestamp=timestamp
         )
 
         # Try to create duplicate session
-        with self.assertRaises(IntegrityError):
+        with self.assertRaises(DRFValidationError):
             with transaction.atomic():
                 EventSession.objects.create(
                     event=self.event, hall=self.hall, timestamp=timestamp
@@ -85,7 +88,7 @@ class EventSessionModelTest(TestCase):
             duration=timedelta(hours=1),
         )
 
-        timestamp = timezone.now()
+        timestamp = timezone.now() + timezone.timedelta(seconds=5)
 
         # Create first session
         EventSession.objects.create(
@@ -108,7 +111,7 @@ class EventSessionModelTest(TestCase):
             number="2",
         )
 
-        timestamp = timezone.now()
+        timestamp = timezone.now() + timezone.timedelta(seconds=5)
 
         # Create first session
         EventSession.objects.create(
@@ -125,7 +128,7 @@ class EventSessionModelTest(TestCase):
 
     def test_event_session_unique_constraint_different_timestamp(self):
         """Test that same event and hall with different timestamp is allowed"""
-        timestamp1 = timezone.now()
+        timestamp1 = timezone.now() + timezone.timedelta(seconds=5)
         timestamp2 = timestamp1 + timedelta(hours=1)
 
         # Create first session
@@ -209,7 +212,9 @@ class EventSessionModelTest(TestCase):
         """Test that event sessions are ordered by created_at (BaseModel)"""
         # Create sessions with different timestamps
         session1 = EventSession.objects.create(
-            event=self.event, hall=self.hall, timestamp=timezone.now()
+            event=self.event,
+            hall=self.hall,
+            timestamp=timezone.now() + timezone.timedelta(seconds=5),
         )
 
         session2 = EventSession.objects.create(
@@ -255,7 +260,9 @@ class SeatSessionModelTest(TestCase):
 
         # Create event session
         self.event_session = EventSession.objects.create(
-            event=self.event, hall=self.hall, timestamp=timezone.now()
+            event=self.event,
+            hall=self.hall,
+            timestamp=timezone.now() + timezone.timedelta(seconds=5),
         )
 
         self.another_seat = Seat.objects.create(hall=self.hall, number=2)
@@ -279,7 +286,7 @@ class SeatSessionModelTest(TestCase):
             self.assertEqual(seat_session.status, status)
 
         # Test invalid status (should raise error)
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(DRFValidationError):
             with transaction.atomic():
                 SeatSession.objects.create(
                     event_session=self.event_session,
@@ -356,7 +363,7 @@ class SeatSessionModelTest(TestCase):
         )
 
         # Try to create duplicate seat session
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(DRFValidationError):
             with transaction.atomic():
                 SeatSession.objects.create(
                     event_session=self.event_session,
@@ -585,3 +592,304 @@ class SeatSessionModelTest(TestCase):
         self.assertIn(
             "Unique SeatSession in definitely event_session", seat_constraint_names
         )
+
+
+class EventSessionValidationTest(TestCase):
+    def setUp(self):
+        """Set up test data"""
+        # Create venue
+        self.venue = Venue.objects.create(
+            name="Test Venue",
+            address="123 Test Street",
+            description="Test venue description",
+        )
+
+        # Create hall (number is integer)
+        self.hall = Hall.objects.create(venue=self.venue, number=1)
+
+        # Create event
+        self.event = Event.objects.create(
+            name="Test Event",
+            description="Test Description",
+            duration=timedelta(hours=2),
+        )
+
+    def test_event_session_clean_with_future_timestamp(self):
+        """Test that clean() passes with future timestamp"""
+        future_timestamp = timezone.now() + timedelta(days=1)
+        event_session = EventSession(
+            event=self.event, hall=self.hall, timestamp=future_timestamp
+        )
+
+        # Should not raise ValidationError
+        try:
+            event_session.clean()
+        except DjangoValidationError:
+            self.fail(
+                "clean() raised ValidationError unexpectedly with future timestamp"
+            )
+
+    def test_event_session_clean_with_past_timestamp(self):
+        """Test that clean() raises ValidationError with past timestamp"""
+        past_timestamp = timezone.now() - timedelta(days=1)
+        event_session = EventSession(
+            event=self.event, hall=self.hall, timestamp=past_timestamp
+        )
+
+        with self.assertRaises(DjangoValidationError) as context:
+            event_session.clean()
+
+        error_messages = str(context.exception)
+        self.assertIn(
+            "The event session timestamp cannot be less than the current time",
+            error_messages,
+        )
+
+    def test_event_session_clean_with_current_timestamp(self):
+        """Test that clean() passes with current timestamp (now)"""
+        current_timestamp = timezone.now() + timedelta(microseconds=100)
+        event_session = EventSession(
+            event=self.event, hall=self.hall, timestamp=current_timestamp
+        )
+
+        # Should not raise ValidationError
+        try:
+            event_session.clean()
+        except DjangoValidationError as e:
+            self.fail(
+                f"clean() raised DjangoValidationError unexpectedly with current timestamp: {e}"
+            )
+
+    def test_event_session_full_clean_with_past_timestamp(self):
+        """Test full_clean() with past timestamp"""
+        past_timestamp = timezone.now() - timedelta(hours=1)
+        event_session = EventSession(
+            event=self.event, hall=self.hall, timestamp=past_timestamp
+        )
+
+        with self.assertRaises(DjangoValidationError) as context:
+            event_session.full_clean()
+
+        error_messages = str(context.exception)
+        self.assertIn(
+            "The event session timestamp cannot be less than the current time",
+            error_messages,
+        )
+
+    def test_event_session_full_clean_with_future_timestamp(self):
+        """Test full_clean() with future timestamp"""
+        future_timestamp = timezone.now() + timedelta(hours=1)
+        event_session = EventSession(
+            event=self.event, hall=self.hall, timestamp=future_timestamp
+        )
+
+        # Should not raise DjangoValidationError
+        try:
+            event_session.full_clean()
+        except DjangoValidationError:
+            self.fail(
+                "full_clean() raised DjangoValidationError unexpectedly with future timestamp"
+            )
+
+    def test_event_session_save_with_past_timestamp_raises_error(self):
+        """Test that save() raises DjangoValidationError with past timestamp"""
+        past_timestamp = timezone.now() - timedelta(days=1)
+        event_session = EventSession(
+            event=self.event, hall=self.hall, timestamp=past_timestamp
+        )
+
+        with self.assertRaises(DRFValidationError) as context:
+            event_session.save()
+
+        error_messages = str(context.exception)
+        self.assertIn(
+            "The event session timestamp cannot be less than the current time",
+            error_messages,
+        )
+
+    def test_event_session_save_with_future_timestamp_success(self):
+        """Test that save() works with future timestamp"""
+        future_timestamp = timezone.now() + timedelta(days=1)
+        event_session = EventSession.objects.create(
+            event=self.event, hall=self.hall, timestamp=future_timestamp
+        )
+
+        self.assertIsNotNone(event_session.id)
+        self.assertEqual(event_session.timestamp, future_timestamp)
+
+    def test_event_session_clean_with_very_old_timestamp(self):
+        """Test clean() with very old timestamp"""
+        very_old_timestamp = timezone.now() - timedelta(days=365)
+        event_session = EventSession(
+            event=self.event, hall=self.hall, timestamp=very_old_timestamp
+        )
+
+        with self.assertRaises(DjangoValidationError) as context:
+            event_session.clean()
+
+        error_messages = str(context.exception)
+        self.assertIn(
+            "The event session timestamp cannot be less than the current time",
+            error_messages,
+        )
+
+    def test_event_session_clean_with_far_future_timestamp(self):
+        """Test clean() with far future timestamp"""
+        far_future_timestamp = timezone.now() + timedelta(days=365)
+        event_session = EventSession(
+            event=self.event, hall=self.hall, timestamp=far_future_timestamp
+        )
+
+        # Should not raise DjangoValidationError
+        try:
+            event_session.clean()
+        except DjangoValidationError:
+            self.fail(
+                "clean() raised DjangoValidationError unexpectedly with far future timestamp"
+            )
+
+    def test_event_session_clean_with_microsecond_precision(self):
+        """Test clean() with timestamp having microseconds"""
+        # Create a timestamp just a microsecond in the past
+        past_timestamp = timezone.now() - timedelta(microseconds=1)
+        event_session = EventSession(
+            event=self.event, hall=self.hall, timestamp=past_timestamp
+        )
+
+        # Should raise DjangoValidationError because it's still in the past
+        with self.assertRaises(DjangoValidationError):
+            event_session.clean()
+
+        # Create a timestamp just a microsecond in the future
+        future_timestamp = timezone.now() + timedelta(microseconds=1000)
+        event_session2 = EventSession(
+            event=self.event, hall=self.hall, timestamp=future_timestamp
+        )
+
+        # Should not raise DjangoValidationError
+        try:
+            event_session2.clean()
+        except DjangoValidationError:
+            self.fail(
+                "clean() raised DjangoValidationError unexpectedly with future timestamp"
+            )
+
+    def test_event_session_clean_after_update(self):
+        """Test that clean() works when updating an existing event session"""
+        # Create event session with future timestamp
+        future_timestamp = timezone.now() + timedelta(days=1)
+        event_session = EventSession.objects.create(
+            event=self.event, hall=self.hall, timestamp=future_timestamp
+        )
+
+        # Try to update to a past timestamp
+        past_timestamp = timezone.now() - timedelta(days=1)
+        event_session.timestamp = past_timestamp
+
+        with self.assertRaises(DjangoValidationError) as context:
+            event_session.full_clean()
+
+        error_messages = str(context.exception)
+        self.assertIn(
+            "The event session timestamp cannot be less than the current time",
+            error_messages,
+        )
+
+        # Try to update to a future timestamp
+        new_future_timestamp = timezone.now() + timedelta(days=2)
+        event_session.timestamp = new_future_timestamp
+
+        try:
+            event_session.full_clean()
+            event_session.save()
+        except DjangoValidationError:
+            self.fail(
+                "DjangoValidationError raised unexpectedly with future timestamp on update"
+            )
+
+        # Verify the update worked
+        event_session.refresh_from_db()
+        self.assertEqual(event_session.timestamp, new_future_timestamp)
+
+    def test_event_session_clean_with_timezone_awareness(self):
+        """Test clean() with timezone-aware and naive timestamps"""
+        # Get a timezone-aware timestamp
+        future_timestamp = timezone.now() + timedelta(days=1)
+        self.assertTrue(timezone.is_aware(future_timestamp))
+
+        event_session = EventSession(
+            event=self.event, hall=self.hall, timestamp=future_timestamp
+        )
+
+        try:
+            event_session.clean()
+        except DjangoValidationError:
+            self.fail("clean() raised DjangoValidationError with timezone-aware timestamp")
+
+        # Past timestamp with timezone
+        past_timestamp = timezone.now() - timedelta(days=1)
+        self.assertTrue(timezone.is_aware(past_timestamp))
+
+        event_session2 = EventSession(
+            event=self.event, hall=self.hall, timestamp=past_timestamp
+        )
+
+        with self.assertRaises(DjangoValidationError):
+            event_session2.clean()
+
+    def test_event_session_bulk_create_with_past_timestamp(self):
+        """Test that bulk_create bypasses clean() validation"""
+        # Note: bulk_create does NOT call clean() by default
+        past_timestamp = timezone.now() - timedelta(days=1)
+
+        # This should work because bulk_create bypasses model validation
+        event_sessions = [
+            EventSession(event=self.event, hall=self.hall, timestamp=past_timestamp)
+        ]
+
+        created = EventSession.objects.bulk_create(event_sessions)
+        self.assertEqual(len(created), 1)
+        self.assertEqual(created[0].timestamp, past_timestamp)
+
+        # Clean up
+        created[0].delete()
+
+    def test_event_session_create_with_past_timestamp_via_manager(self):
+        """Test that objects.create() with past timestamp raises DjangoValidationError"""
+        past_timestamp = timezone.now() - timedelta(days=1)
+
+        # objects.create() calls full_clean() before saving
+        with self.assertRaises(DRFValidationError) as context:
+            EventSession.objects.create(
+                event=self.event, hall=self.hall, timestamp=past_timestamp
+            )
+
+        error_messages = str(context.exception)
+        self.assertIn(
+            "The event session timestamp cannot be less than the current time",
+            error_messages,
+        )
+
+    def test_event_session_clean_with_exact_current_time(self):
+        """Test clean() with timestamp exactly equal to current time (with microseconds)"""
+        now = timezone.now()
+
+        future_time = now + timedelta(microseconds=500)
+
+        event_session = EventSession(
+            event=self.event, hall=self.hall, timestamp=future_time
+        )
+
+        # Should not raise DjangoValidationError
+        try:
+            event_session.clean()
+        except DjangoValidationError as e:
+            self.fail(f"clean() raised DjangoValidationError with future timestamp: {e}")
+
+        past_time = now - timedelta(microseconds=500)
+        event_session2 = EventSession(
+            event=self.event, hall=self.hall, timestamp=past_time
+        )
+
+        with self.assertRaises(DjangoValidationError):
+            event_session2.clean()
