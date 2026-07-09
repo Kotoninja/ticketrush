@@ -1,12 +1,13 @@
-from django.test import TestCase
+import datetime
 from decimal import Decimal
 
+from django.test import TestCase
 from event.models import Event
 from hall.models import Hall, Venue
 from seat.models import Seat
+
 from session.models import EventSession, SeatSession
 from session.serializers import EventSessionReadSerializer, EventSessionWriteSerializer
-import datetime
 
 
 class EventSessionSerializerTest(TestCase):

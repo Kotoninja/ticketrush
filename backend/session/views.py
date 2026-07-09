@@ -5,7 +5,6 @@ from rest_framework.response import Response
 
 from .models import EventSession
 from .serializers import EventSessionReadSerializer, EventSessionWriteSerializer
-from .services import attach_all_places_to_event_session
 
 
 class EventSessionAPI(viewsets.ModelViewSet):
