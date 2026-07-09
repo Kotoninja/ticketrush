@@ -26,15 +26,15 @@ class EventSessionAPI(viewsets.ModelViewSet):
 
     @extend_schema(
         parameters=[
-            OpenApiParameter("hall", type=int, description="Sort events by venue")
+            OpenApiParameter("venue", type=int, description="Sort events by venue")
         ]
     )
     def list(self, request):
 
         events = self.get_queryset()
 
-        if get_hall := request.query_params.get("hall", None):
-            events = events.filter(hall=get_hall)
+        if venue := request.query_params.get("venue", None):
+            events = events.filter(hall__venue=venue)
 
         serializer = self.get_serializer(events, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -67,4 +67,4 @@ class EventSessionAPI(viewsets.ModelViewSet):
                 many=True,
             )
             return Response(data=serializer.data, status=status.HTTP_200_OK)
-        return Response(data=[],status=status.HTTP_200_OK)
+        return Response(data=[], status=status.HTTP_200_OK)
