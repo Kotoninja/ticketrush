@@ -1,5 +1,5 @@
 from common.models import BaseModel
-from django.db import models
+from django.db import models, transaction
 from event.models import Event
 from hall.models import Hall
 from seat.models import Seat
@@ -19,6 +19,14 @@ class EventSession(BaseModel):
                 name="Unique session in definitely place and time",
             )
         ]
+
+    def save(self, *args, **kwargs):
+        from .services import attach_all_places_to_event_session
+
+        super().save(*args, **kwargs)
+
+        with transaction.atomic():
+            attach_all_places_to_event_session(self)
 
     def __str__(self) -> str:
         return f"{self.event.name} / {self.hall.venue.name} / {self.hall.number} / {self.timestamp}"
