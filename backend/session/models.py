@@ -1,7 +1,10 @@
 from common.models import BaseModel
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import models, transaction
+from django.utils import timezone
 from event.models import Event
 from hall.models import Hall
+from rest_framework.exceptions import ValidationError as DRFValidationError
 from seat.models import Seat
 
 
@@ -20,8 +23,22 @@ class EventSession(BaseModel):
             )
         ]
 
+    def clean(self):
+        if self.timestamp <= timezone.now():
+            raise DjangoValidationError(
+                {
+                    "timestamp": "The event session timestamp cannot be less than the current time."
+                }
+            )
+        super().clean()
+
     def save(self, *args, **kwargs):
         from .services import attach_all_places_to_event_session
+
+        try:
+            self.full_clean()
+        except DjangoValidationError as e:
+            raise DRFValidationError(e.message_dict)
 
         super().save(*args, **kwargs)
 
@@ -46,7 +63,10 @@ class SeatSession(BaseModel):
     price = models.DecimalField(max_digits=4, decimal_places=2)
 
     def save(self, *args, **kwargs):
-        self.full_clean()
+        try:
+            self.full_clean()
+        except DjangoValidationError as e:
+            raise DRFValidationError(e.message_dict)
         super().save(*args, **kwargs)
 
     class Meta:
