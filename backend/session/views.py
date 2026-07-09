@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from .models import EventSession
 from .serializers import EventSessionReadSerializer, EventSessionWriteSerializer
 from drf_spectacular.utils import extend_schema, OpenApiParameter
+from .services import event_search_filter
 
 
 class EventSessionAPI(viewsets.ModelViewSet):
@@ -51,3 +52,19 @@ class EventSessionAPI(viewsets.ModelViewSet):
         event_session_instance = get_object_or_404(self.get_queryset(), pk=pk)
         serializer = self.get_serializer(event_session_instance)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+    @extend_schema(
+        parameters=[
+            OpenApiParameter("search", type=str, description="search events by name"),
+            OpenApiParameter("venue", type=int, description="search by venue"),
+        ]
+    )
+    @action(detail=False)
+    def search(self, request):
+        if request.query_params.get("search"):
+            serializer = self.get_serializer(
+                self.get_queryset().filter(event_search_filter(request=request)),
+                many=True,
+            )
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(data=[],status=status.HTTP_200_OK)
