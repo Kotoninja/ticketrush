@@ -32,9 +32,9 @@ postgres        → primary data store
 
 ### Phase 1 — Core domain & catalog
 Basic data model and a browsable API for events, with no booking logic yet.
-- [ ] Venues, halls, seat maps, events and sessions
-- [ ] Admin panel for managing the catalog
-- [ ] Public API: browse/search/filter events and sessions
+- [x] Venues, halls, seat maps, events and sessions
+- [x] Admin panel for managing the catalog
+- [x] Public API: browse/search/filter events and sessions
 
 ### Phase 2 — Accounts & access
 Users can register and the API distinguishes who's allowed to do what.
