@@ -8,6 +8,7 @@ from .models import EventSession
 from .serializers import EventSessionReadSerializer, EventSessionWriteSerializer
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from .services import event_search_filter
+from django.shortcuts import render
 
 
 class EventSessionAPI(viewsets.ModelViewSet):
@@ -68,3 +69,7 @@ class EventSessionAPI(viewsets.ModelViewSet):
             )
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         return Response(data=[], status=status.HTTP_200_OK)
+
+
+def index(request):
+    return render(request, "session/index.html")

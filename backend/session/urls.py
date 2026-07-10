@@ -1,8 +1,8 @@
 from rest_framework import routers
-
-from .views import EventSessionAPI
+from django.urls import path
+from .views import EventSessionAPI, index
 
 router = routers.SimpleRouter()
 router.register("", EventSessionAPI)
 
-urlpatterns = [] + router.urls
+urlpatterns = [path("index/", index  )] + router.urls
