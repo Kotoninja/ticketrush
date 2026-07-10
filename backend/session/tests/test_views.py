@@ -58,7 +58,7 @@ class EventSessionAPITestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]["id"], self.event_session.id)
-        self.assertEqual(response.data[0]["event"], self.event_session.event.id)
+        self.assertEqual(response.data[0]["event"]["id"], self.event_session.event.id)
 
     def test_list_empty_event_sessions(self):
         """Test retrieving list when no event sessions exist"""
@@ -78,8 +78,8 @@ class EventSessionAPITestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["id"], self.event_session.id)
-        self.assertEqual(response.data["event"], self.event_session.event.id)
-        self.assertEqual(response.data["hall"], self.event_session.hall.id)
+        self.assertEqual(response.data["event"]["id"], self.event_session.event.id)
+        self.assertEqual(response.data["hall"]["id"], self.event_session.hall.id)
         self.assertIn("seats", response.data)
         self.assertEqual(len(response.data["seats"]), 5)
 
@@ -101,8 +101,8 @@ class EventSessionAPITestCase(TestCase):
         response = self.client.post(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["event"], self.event.id)
-        self.assertEqual(response.data["hall"], self.hall.id)
+        self.assertEqual(response.data["event"]["id"], self.event.id)
+        self.assertEqual(response.data["hall"]["id"], self.hall.id)
 
         # Verify EventSession was created
         event_session_id = response.data["id"]
