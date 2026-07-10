@@ -1,3 +1,5 @@
+from event.serializers import EventSerializerWithoutDescription
+from hall.serializer import HallBaseSerializer
 from rest_framework import serializers
 
 from .models import EventSession, SeatSession
@@ -15,6 +17,8 @@ class EventSessionReadSerializer(serializers.ModelSerializer):
         exclude = ["created_at", "updated_at"]
 
     seats = SeatSessionSerializer(many=True)
+    event = EventSerializerWithoutDescription()
+    hall = HallBaseSerializer()
 
 
 class EventSessionWriteSerializer(serializers.ModelSerializer):
