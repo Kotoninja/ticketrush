@@ -31,10 +31,11 @@ omit = [
     "*/migrations/*",
     "*/tests/*",
     "*/venv/*",
-    "*/tests.py"
+    "*/tests.py",
     "config/*",
     "manage.py",
     "*apps.py",
     "*wsgi.py",
     "*asgi.py",
+    "user/managers.py"
 ]
