@@ -8,7 +8,7 @@ from .models import EventSession, SeatSession
 class SeatSessionSerializer(serializers.ModelSerializer):
     class Meta:
         model = SeatSession
-        exclude = ["created_at", "updated_at"]
+        exclude = ["created_at", "updated_at", "event_session"]
 
 
 class EventSessionReadSerializer(serializers.ModelSerializer):
