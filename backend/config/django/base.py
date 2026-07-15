@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "seat",
     "event",
     "session",
+    "booking",
     # Third party-packages
     "rest_framework",
     "drf_spectacular",
