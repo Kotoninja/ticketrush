@@ -1,14 +1,17 @@
 from django.db import transaction
-from django.shortcuts import get_object_or_404
-from rest_framework import status, viewsets
+from django.shortcuts import get_object_or_404, render
+from drf_spectacular.utils import OpenApiParameter, extend_schema
+from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .models import EventSession
-from .serializers import EventSessionReadSerializer, EventSessionWriteSerializer
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from .models import EventSession, SeatSession
+from .serializers import (
+    EventSessionReadSerializer,
+    EventSessionWriteSerializer,
+    SeatSessionWithFullDetail,
+)
 from .services import event_search_filter
-from django.shortcuts import render
 
 
 class EventSessionAPI(viewsets.ModelViewSet):
@@ -69,6 +72,18 @@ class EventSessionAPI(viewsets.ModelViewSet):
             )
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         return Response(data=[], status=status.HTTP_200_OK)
+
+
+class SeatSessionAPI(generics.RetrieveAPIView):
+    queryset = SeatSession.objects.all()
+    serializer_class = SeatSessionWithFullDetail
+
+    def get(self, request, event_session_pk, seat_session_pk):
+        seat_session_instance = get_object_or_404(
+            self.get_queryset(), event_session=event_session_pk, pk=seat_session_pk
+        )
+        serializer = self.get_serializer(seat_session_instance)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 def index(request):
