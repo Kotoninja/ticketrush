@@ -11,6 +11,22 @@ class SeatSessionSerializer(serializers.ModelSerializer):
         exclude = ["created_at", "updated_at", "event_session"]
 
 
+class EventSessionSerializerWithFullDetail(serializers.ModelSerializer):
+    class Meta:
+        model = EventSession
+        exclude = ["created_at", "updated_at"]
+        depth = 2
+
+
+class SeatSessionWithFullDetail(serializers.ModelSerializer):
+    class Meta:
+        model = SeatSession
+        exclude = ["created_at", "updated_at"]
+        depth = 1
+
+    event_session = EventSessionSerializerWithFullDetail()
+
+
 class EventSessionReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventSession
