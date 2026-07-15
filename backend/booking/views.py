@@ -1,21 +1,18 @@
-from rest_framework import generics
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, status
+from rest_framework.response import Response
+
 from .models import Booking
 from .serializers import BookingReadSerializer
-from django.shortcuts import get_object_or_404
 
 
 class BookingRetrieveView(generics.RetrieveAPIView):
     queryset = Booking.objects.all()
     serializer_class = BookingReadSerializer
-    lookup_field = "user"
-    lookup_fields = ["user", "seat_session"]
 
-    def get_object(self):
-        queryset = self.get_queryset()
-        filter = {}
-
-        for field in self.lookup_fields:
-            filter[field] = self.kwargs[field]
-
-        obj = get_object_or_404(queryset, **filter)
-        return obj
+    def get(self, request, user_pk, seat_session_pk):
+        booking_instance = get_object_or_404(
+            self.get_queryset(), user=user_pk, seat_session=seat_session_pk
+        )
+        serializer = self.get_serializer(booking_instance)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
