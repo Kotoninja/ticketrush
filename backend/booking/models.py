@@ -1,8 +1,9 @@
 from common.models import BaseModel
 from django.db import models
-
-from user.models import CustomUser
 from session.models import SeatSession
+from user.models import CustomUser
+
+from .validators import user_have_draft_event_session
 
 
 class Booking(BaseModel):
@@ -18,13 +19,9 @@ class Booking(BaseModel):
     seat_session = models.ForeignKey(to=SeatSession, on_delete=models.CASCADE)
     status = models.CharField(choices=BOOKING_STATUS, default="draft")
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["user", "seat_session"],
-                name="user and seat_session must be unique.",
-            ),
-        ]
+    def clean(self):
+        user_have_draft_event_session(self)
+        super().clean()
 
     def save(self, *args, **kwargs):
         self.full_clean()
