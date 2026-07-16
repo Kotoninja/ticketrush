@@ -1,9 +1,9 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, status
+from rest_framework import generics, mixins, status
 from rest_framework.response import Response
 
 from .models import Booking
-from .serializers import BookingReadSerializer
+from .serializers import BookingReadSerializer, BookingWriteSerializer
 
 
 class BookingRetrieveView(generics.RetrieveAPIView):
@@ -16,3 +16,11 @@ class BookingRetrieveView(generics.RetrieveAPIView):
         )
         serializer = self.get_serializer(booking_instance)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class BookingCreateView(generics.CreateAPIView, mixins.CreateModelMixin):
+    queryset = Booking.objects.all()
+    serializer_class = BookingWriteSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request=request, *args, **kwargs)

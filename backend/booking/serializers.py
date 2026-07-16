@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Booking
 from session.serializers import SeatSessionWithFullDetail
+
+from .models import Booking
 
 
 class BookingReadSerializer(serializers.ModelSerializer):
@@ -9,3 +10,9 @@ class BookingReadSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     seat_session = SeatSessionWithFullDetail()
+
+
+class BookingWriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Booking
+        exclude = ["created_at", "updated_at", "status"]
