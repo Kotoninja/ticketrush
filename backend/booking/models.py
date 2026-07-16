@@ -1,5 +1,6 @@
 from common.models import BaseModel
 from django.db import models
+from django.utils import timezone
 from session.models import SeatSession
 from user.models import CustomUser
 
@@ -18,6 +19,16 @@ class Booking(BaseModel):
     user = models.ForeignKey(to=CustomUser, on_delete=models.PROTECT)
     seat_session = models.ForeignKey(to=SeatSession, on_delete=models.CASCADE)
     status = models.CharField(choices=BOOKING_STATUS, default="draft")
+    draft_expire_time = models.DateTimeField(null=True, blank=True)
+
+    def is_available(self) -> bool:
+        if (
+            self.draft_expire_time
+            and self.draft_expire_time
+            > self.draft_expire_time + timezone.timedelta(minutes=5)
+        ):
+            return False
+        return True
 
     def clean(self):
         user_have_draft_event_session(self)
