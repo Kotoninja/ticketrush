@@ -13,10 +13,12 @@ def user_have_draft_event_session(booking_instance: Booking):
     """
     from .models import Booking
 
-    if Booking.objects.filter(
-        Q(seat_session__event_session=booking_instance.seat_session.event_session.pk)
-        & Q(status="draft")
-    ):
+    has_draft_bookings = Booking.objects.filter(
+        seat_session__event_session=booking_instance.seat_session.event_session,
+        status="draft",
+    ).exists()
+
+    if has_draft_bookings:
         raise ValidationError(
             "You are already book a space until [End Date]. Concurrent book are not possible. To book a new space, please end the current book early, wait until it ends, or contact support to arrange a replacement."
         )
