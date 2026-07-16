@@ -3,6 +3,61 @@ info:
   title: ''
   version: 0.0.0
 paths:
+  /api/booking/:
+    post:
+      operationId: booking_create
+      tags:
+      - booking
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookingWrite'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BookingWrite'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BookingWrite'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingWrite'
+          description: ''
+  /api/booking/{user_pk}/{seat_session_pk}/:
+    get:
+      operationId: booking_retrieve
+      parameters:
+      - in: path
+        name: seat_session_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: user_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - booking
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookingRead'
+          description: ''
   /api/schema/:
     get:
       operationId: schema_retrieve
@@ -153,6 +208,12 @@ paths:
   /api/session/:
     get:
       operationId: session_list
+      parameters:
+      - in: query
+        name: venue
+        schema:
+          type: integer
+        description: Sort events by venue
       tags:
       - session
       security:
@@ -166,7 +227,34 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/EventSession'
+                  $ref: '#/components/schemas/EventSessionRead'
+          description: ''
+    post:
+      operationId: session_create
+      tags:
+      - session
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventSessionWrite'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EventSessionWrite'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EventSessionWrite'
+        required: true
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventSessionWrite'
           description: ''
   /api/session/{id}/:
     get:
@@ -189,7 +277,61 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EventSession'
+                $ref: '#/components/schemas/EventSessionRead'
+          description: ''
+  /api/session/search/:
+    get:
+      operationId: session_search_retrieve
+      parameters:
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: search events by name
+      - in: query
+        name: venue
+        schema:
+          type: integer
+        description: search by venue
+      tags:
+      - session
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventSessionRead'
+          description: ''
+  /api/session/seat/{event_session_pk}/{seat_session_pk}:
+    get:
+      operationId: session_seat_retrieve
+      parameters:
+      - in: path
+        name: event_session_pk
+        schema:
+          type: integer
+        required: true
+      - in: path
+        name: seat_session_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - session
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeatSessionWithFullDetail'
           description: ''
   /api/venue/:
     get:
@@ -346,7 +488,185 @@ paths:
           description: No response body
 components:
   schemas:
-    EventSession:
+    AgeAvailableEnum:
+      enum:
+      - '0'
+      - '6'
+      - '12'
+      - '16'
+      - '18'
+      type: string
+      description: |-
+        * `0` - 0+
+        * `6` - 6+
+        * `12` - 12+
+        * `16` - 16+
+        * `18` - 18+
+    BookingRead:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        seat_session:
+          $ref: '#/components/schemas/SeatSessionWithFullDetail'
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/BookingReadStatusEnum'
+        user:
+          type: integer
+      required:
+      - created_at
+      - id
+      - seat_session
+      - updated_at
+      - user
+    BookingReadStatusEnum:
+      enum:
+      - draft
+      - confirmed
+      - paid
+      - cancelled
+      - expired
+      type: string
+      description: |-
+        * `draft` - Draft
+        * `confirmed` - Confirmed
+        * `paid` - Paid
+        * `cancelled` - Cancelled
+        * `expired` - Expired
+    BookingWrite:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        seat_session:
+          type: integer
+      required:
+      - id
+      - seat_session
+      - user
+    CategoryEnum:
+      enum:
+      - theater
+      - cinema
+      - other
+      type: string
+      description: |-
+        * `theater` - Theater
+        * `cinema` - Cinema
+        * `other` - Other
+    EventSerializerWithoutDescription:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        duration:
+          type: string
+        age_available:
+          $ref: '#/components/schemas/AgeAvailableEnum'
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
+      required:
+      - age_available
+      - category
+      - duration
+      - id
+      - name
+    EventSessionRead:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        seats:
+          type: array
+          items:
+            $ref: '#/components/schemas/SeatSession'
+        event:
+          $ref: '#/components/schemas/EventSerializerWithoutDescription'
+        hall:
+          $ref: '#/components/schemas/HallBase'
+        timestamp:
+          type: string
+          format: date-time
+      required:
+      - event
+      - hall
+      - id
+      - seats
+      - timestamp
+    EventSessionSerializerWithFullDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+        event:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+        hall:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+      required:
+      - event
+      - hall
+      - id
+      - timestamp
+    EventSessionWrite:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        timestamp:
+          type: string
+          format: date-time
+        event:
+          type: integer
+        hall:
+          type: integer
+      required:
+      - event
+      - hall
+      - id
+      - timestamp
+    HallBase:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+        number:
+          type: integer
+          maximum: 32767
+          minimum: 0
+      required:
+      - id
+      - number
+    Nested:
       type: object
       properties:
         id:
@@ -360,19 +680,28 @@ components:
           type: string
           format: date-time
           readOnly: true
-        timestamp:
+        name:
           type: string
-          format: date-time
-        event:
-          type: integer
-        hall:
-          type: integer
+          maxLength: 100
+        small_description:
+          type: string
+          nullable: true
+        description:
+          type: string
+          nullable: true
+        duration:
+          type: string
+        age_available:
+          $ref: '#/components/schemas/AgeAvailableEnum'
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
       required:
+      - age_available
+      - category
       - created_at
-      - event
-      - hall
+      - duration
       - id
-      - timestamp
+      - name
       - updated_at
     PatchedVenue:
       type: object
@@ -405,6 +734,57 @@ components:
         created_by:
           type: integer
           nullable: true
+    SeatSession:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/StatusD0fEnum'
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+        seat:
+          type: integer
+      required:
+      - id
+      - price
+      - seat
+    SeatSessionWithFullDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        event_session:
+          $ref: '#/components/schemas/EventSessionSerializerWithFullDetail'
+        status:
+          $ref: '#/components/schemas/StatusD0fEnum'
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+        seat:
+          allOf:
+          - $ref: '#/components/schemas/Nested'
+          readOnly: true
+      required:
+      - event_session
+      - id
+      - price
+      - seat
+    StatusD0fEnum:
+      enum:
+      - free
+      - pending
+      - busy
+      type: string
+      description: |-
+        * `free` - Free
+        * `pending` - Pending
+        * `busy` - Busy
     Venue:
       type: object
       properties:
