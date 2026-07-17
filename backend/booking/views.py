@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 
 from .models import Booking
 from .serializers import BookingReadSerializer, BookingWriteSerializer
+from .services import BookingService
+from drf_spectacular.utils import extend_schema
 
 
 class BookingRetrieveView(generics.RetrieveAPIView):
@@ -22,8 +24,10 @@ class BookingRetrieveView(generics.RetrieveAPIView):
 
 
 class BookingCreateView(APIView):
+    @extend_schema(
+        request=BookingWriteSerializer, responses={201: BookingReadSerializer}
+    )
     def post(self, request):
-        from .services import BookingService
 
         serializer = BookingWriteSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -37,3 +41,14 @@ class BookingCreateView(APIView):
 
         response_serializer = BookingReadSerializer(new_booking)
         return Response(data=response_serializer.data)
+
+
+class BookingDeleteView(APIView):
+    def delete(self, request, pk: None):
+        if pk is None:
+            return Response(
+                {"error": "Method 'DELETE' not allowed without an ID."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        BookingService.delete(pk=pk)
+        return Response(data="Successfully deleted", status=status.HTTP_200_OK)

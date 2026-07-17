@@ -1,9 +1,9 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import Q
 from rest_framework.exceptions import ValidationError
 
 from .models import EventSession, SeatSession
-from django.core.exceptions import ObjectDoesNotExist
 
 
 def attach_all_places_to_event_session(
@@ -37,7 +37,7 @@ def event_search_filter(request) -> Q:
 
 class SeatSessionService:
     @staticmethod
-    def set_status(seat_session_pk: int,* , status: str) -> SeatSession:
+    def set_status(seat_session_pk: int, *, status: str) -> SeatSession:
         with transaction.atomic():
             try:
                 seat_session_instance: SeatSession = (
