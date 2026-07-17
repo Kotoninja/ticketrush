@@ -37,19 +37,20 @@ def event_search_filter(request) -> Q:
 
 class SeatSessionService:
     @staticmethod
-    def set_pending(seat_session_pk: int) -> SeatSession:
+    def set_status(seat_session_pk: int,* , status: str) -> SeatSession:
         with transaction.atomic():
             try:
                 seat_session_instance: SeatSession = (
                     SeatSession.objects.select_for_update().get(pk=seat_session_pk)
                 )
 
-                if seat_session_instance.status != "free":
-                    raise ValidationError(
-                        {"seat_session": "the place is already taken"}
-                    )
+                if status == "pending":
+                    if seat_session_instance.status != "free":
+                        raise ValidationError(
+                            {"seat_session": "the place is already taken"}
+                        )
 
-                seat_session_instance.status = "pending"
+                seat_session_instance.status = status
                 seat_session_instance.save()
                 return seat_session_instance
 
