@@ -9,13 +9,19 @@ from booking.models import Booking
 
 class BookingService:
     @staticmethod
-    @transaction.atomic
-    def create(*, user: CustomUser, seat_session: SeatSession) -> Booking:
+    def _check_user_and_seat_session(
+        user: CustomUser | None, seat_session: SeatSession | None
+    ) -> None:
         if not user:
             raise ValueError("user is required")
 
         if not seat_session:
             raise ValueError("seat_session is required")
+
+    @staticmethod
+    @transaction.atomic
+    def create(*, user: CustomUser, seat_session: SeatSession) -> Booking:
+        BookingService._check_user_and_seat_session(user, seat_session)
 
         SeatSessionService.set_status(seat_session.pk, status="pending")
 
@@ -35,3 +41,29 @@ class BookingService:
             return booking.delete()
         except Booking.DoesNotExist:
             raise ValidationError(f" object with {pk} pk does not exist")
+
+    @staticmethod
+    @transaction.atomic
+    def confirm(*, user: CustomUser, seat_session: SeatSession):
+        BookingService._check_user_and_seat_session(user, seat_session)
+
+        if Booking.objects.get(user=user, seat_session=seat_session):
+            SeatSessionService.set_status(seat_session.pk, status="busy")
+
+        raise ValidationError(
+            f"Object with user - {user} and seat_session - {seat_session.pk}"
+        )
+
+    @staticmethod
+    @transaction.atomic
+    def canceled(*, user: CustomUser, seat_session: SeatSession):
+        BookingService._check_user_and_seat_session(user, seat_session)
+
+        if booking := Booking.objects.get(user=user, seat_session=seat_session):
+            SeatSessionService.set_status(seat_session.pk, status="free")
+
+            booking.delete()
+
+        raise ValidationError(
+            f"Object with user - {user} and seat_session - {seat_session.pk}"
+        )
