@@ -22,11 +22,7 @@ class Booking(BaseModel):
     draft_expire_time = models.DateTimeField(null=True, blank=True)
 
     def is_available(self) -> bool:
-        if (
-            self.draft_expire_time
-            and self.draft_expire_time
-            > self.draft_expire_time + timezone.timedelta(minutes=5)
-        ):
+        if self.draft_expire_time and timezone.now() > self.draft_expire_time:
             return False
         return True
 
@@ -36,4 +32,5 @@ class Booking(BaseModel):
 
     def save(self, *args, **kwargs):
         self.full_clean()
-        return super().save(*args, **kwargs)
+        self.draft_expire_time = timezone.now() + timezone.timedelta(minutes=5)
+        super().save(*args, **kwargs)
