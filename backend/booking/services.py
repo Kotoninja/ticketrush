@@ -1,5 +1,5 @@
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from rest_framework.exceptions import ValidationError
 from session.models import SeatSession
 from session.services import SeatSessionService
 from user.models import CustomUser
@@ -25,13 +25,13 @@ class BookingService:
 
         return new_booking_instance
 
+    @staticmethod
     @transaction.atomic
-    def delete(*, pk: int | None) -> tuple[int, dict[str, int]]:
+    def delete(*, user: CustomUser, pk: int | None) -> tuple[int, dict[str, int]]:
         try:
-            booking = Booking.objects.get(pk=pk)
-            print("FREEEE")
+            booking = Booking.objects.get(user=user, pk=pk)
             SeatSessionService.set_status(booking.seat_session.pk, status="free")
 
             return booking.delete()
         except Booking.DoesNotExist:
-            raise ObjectDoesNotExist(f" object with {pk} pk does not exist")
+            raise ValidationError(f" object with {pk} pk does not exist")
