@@ -1,6 +1,5 @@
-from django.db.models import QuerySet
-
 from django.db import transaction
+from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 from session.models import SeatSession
@@ -72,22 +71,8 @@ class BookingService:
     def confirm(*, user: CustomUser, seat_session: SeatSession):
         BookingService._check_user_and_seat_session(user, seat_session)
 
-        if Booking.objects.get(user=user, seat_session=seat_session):
+        if Booking.objects.filter(user=user, seat_session=seat_session).exists():
             SeatSessionService.set_status(seat_session.pk, status="busy")
-
-        raise ValidationError(
-            f"Object with user - {user} and seat_session - {seat_session.pk}"
-        )
-
-    @staticmethod
-    @transaction.atomic
-    def canceled(*, user: CustomUser, seat_session: SeatSession):
-        BookingService._check_user_and_seat_session(user, seat_session)
-
-        if booking := Booking.objects.get(user=user, seat_session=seat_session):
-            SeatSessionService.set_status(seat_session.pk, status="free")
-
-            booking.delete()
 
         raise ValidationError(
             f"Object with user - {user} and seat_session - {seat_session.pk}"
