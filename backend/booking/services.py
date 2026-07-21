@@ -1,3 +1,5 @@
+from django.db.models import QuerySet
+
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
@@ -23,12 +25,23 @@ class BookingService:
     @staticmethod
     def get_object(request, *args, **kwargs) -> Booking:
         object = get_object_or_404(
-            Booking.objects.filter(filters.availiable()),
-            user=request.user,
-            **kwargs
+            Booking.objects.filter(filters.availiable()), user=request.user, **kwargs
         )
 
         return object
+
+    @staticmethod
+    def get_queryset(
+        request, queryset: None | QuerySet[Booking] = None, *args, **kwargs
+    ):
+        if queryset is None:
+            queryset = Booking.objects.all()
+
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        queryset = queryset.filter(**kwargs)
+
+        queryset = queryset.filter(user=request.user)
+        return queryset
 
     @staticmethod
     @transaction.atomic

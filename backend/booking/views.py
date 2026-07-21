@@ -54,14 +54,15 @@ class BookingListView(APIView):
     def get(self, request):
         booking_list = Booking.objects.select_related(
             "seat_session__event_session__hall__venue"
-        ).filter(user=request.user)
+        )
 
-        if venue_pk := request.query_params.get("venue_pk"):
-            booking_list = booking_list.filter(
-                seat_session__event_session__hall__venue=venue_pk
-            )
+        venue_pk = request.query_params.get("venue_pk")
 
-        if booking_list:
-            serializer = BookingReadSerializer(booking_list, many=True)
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
-        return Response(data=[], status=status.HTTP_200_OK)
+        booking_list = BookingService.get_queryset(
+            request=request,
+            queryset=booking_list,
+            seat_session__event_session__hall__venue=venue_pk,
+        )
+
+        serializer = BookingReadSerializer(booking_list, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
