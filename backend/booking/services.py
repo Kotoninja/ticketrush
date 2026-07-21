@@ -57,14 +57,11 @@ class BookingService:
 
     @staticmethod
     @transaction.atomic
-    def delete(*, user: CustomUser, pk: int | None) -> tuple[int, dict[str, int]]:
-        try:
-            booking = Booking.objects.get(user=user, pk=pk)
-            SeatSessionService.set_status(booking.seat_session.pk, status="free")
-
-            return booking.delete()
-        except Booking.DoesNotExist:
-            raise ValidationError(f" object with {pk} pk does not exist")
+    def delete(*, pk: int | None) -> tuple[int, dict[str, int]]:
+        booking = get_object_or_404(Booking, pk=pk)
+        SeatSessionService.set_status(booking.seat_session.pk, status="free")
+        
+        return booking.delete()
 
     @staticmethod
     @transaction.atomic

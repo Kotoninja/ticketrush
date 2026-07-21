@@ -4,8 +4,8 @@ from booking.services import BookingService
 
 
 @shared_task
-def draft_seat(*, user, pk: int):
+def draft_seat(*, pk: int):
     try:
-        BookingService.delete(user=user, pk=pk)
+        BookingService.delete(pk=pk)
     except Booking.DoesNotExist:
         pass

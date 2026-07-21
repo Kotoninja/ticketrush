@@ -39,8 +39,10 @@ class BookingCreateView(APIView):
 
 
 class BookingDeleteView(APIView):
+    # add permission
+    
     def delete(self, request, pk: None):
-        BookingService.delete(user=request.user, pk=pk)
+        BookingService.delete(pk=pk)
         return Response(data="Successfully deleted", status=status.HTTP_200_OK)
 
 
