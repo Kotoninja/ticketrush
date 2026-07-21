@@ -1,6 +1,5 @@
 from typing import cast
 
-from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.response import Response
@@ -13,8 +12,8 @@ from .services import BookingService
 
 class BookingRetrieveView(APIView):
     def get(self, request, seat_session_pk):
-        booking_instance = get_object_or_404(
-            Booking.objects.all(), user=request.user, seat_session=seat_session_pk
+        booking_instance = BookingService.get_object(
+            request=request, seat_session_pk=seat_session_pk
         )
         serializer = BookingReadSerializer(booking_instance)
         return Response(data=serializer.data, status=status.HTTP_200_OK)

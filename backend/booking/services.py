@@ -1,9 +1,11 @@
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 from session.models import SeatSession
 from session.services import SeatSessionService
 from user.models import CustomUser
 
+from booking import filters
 from booking.models import Booking
 
 
@@ -17,6 +19,16 @@ class BookingService:
 
         if not seat_session:
             raise ValueError("seat_session is required")
+
+    @staticmethod
+    def get_object(request, seat_session_pk):
+        object = get_object_or_404(
+            Booking.objects.filter(filters.availiable()),
+            user=request.user,
+            seat_session=seat_session_pk,
+        )
+
+        return object
 
     @staticmethod
     @transaction.atomic
