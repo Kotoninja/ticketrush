@@ -21,11 +21,11 @@ class BookingService:
             raise ValueError("seat_session is required")
 
     @staticmethod
-    def get_object(request, seat_session_pk):
+    def get_object(request, *args, **kwargs) -> Booking:
         object = get_object_or_404(
             Booking.objects.filter(filters.availiable()),
             user=request.user,
-            seat_session=seat_session_pk,
+            **kwargs
         )
 
         return object

@@ -13,7 +13,7 @@ from .services import BookingService
 class BookingRetrieveView(APIView):
     def get(self, request, seat_session_pk):
         booking_instance = BookingService.get_object(
-            request=request, seat_session_pk=seat_session_pk
+            request=request, seat_session=seat_session_pk
         )
         serializer = BookingReadSerializer(booking_instance)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
