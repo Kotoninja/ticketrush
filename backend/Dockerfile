@@ -11,8 +11,9 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN uv pip install -r requirements.txt --system
+COPY pyproject.toml uv.lock ./
+
+RUN uv pip install -r pyproject.toml --system
 
 COPY . .
 

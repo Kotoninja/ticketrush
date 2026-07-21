@@ -1,5 +1,9 @@
-from .models import EventSession, SeatSession
+from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
 from django.db.models import Q
+from rest_framework.exceptions import ValidationError
+
+from .models import EventSession, SeatSession
 
 
 def attach_all_places_to_event_session(
@@ -29,3 +33,28 @@ def event_search_filter(request) -> Q:
         base_filter &= Q(hall__venue=venue)
 
     return base_filter
+
+
+class SeatSessionService:
+    @staticmethod
+    def set_status(seat_session_pk: int, *, status: str) -> SeatSession:
+        with transaction.atomic():
+            try:
+                seat_session_instance: SeatSession = (
+                    SeatSession.objects.select_for_update().get(pk=seat_session_pk)
+                )
+
+                if status == "pending":
+                    if seat_session_instance.status != "free":
+                        raise ValidationError(
+                            {"seat_session": "the place is already taken"}
+                        )
+
+                seat_session_instance.status = status
+                seat_session_instance.save()
+                return seat_session_instance
+
+            except SeatSession.DoesNotExist:
+                raise ObjectDoesNotExist(
+                    f"Seat session with {seat_session_pk} pk not found"
+                )

@@ -24,7 +24,7 @@ class EventSession(BaseModel):
         ]
 
     def clean(self):
-        if self.timestamp <= timezone.now():
+        if self.timestamp <= timezone.now(): # add if self.timsestamp and (...)
             raise DjangoValidationError(
                 {
                     "timestamp": "The event session timestamp cannot be less than the current time."

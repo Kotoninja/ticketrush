@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 import os
+import sys
 
 from config.env import BASE_DIR, env
 
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     "seat",
     "event",
     "session",
+    "booking",
     # Third party-packages
     "rest_framework",
     "drf_spectacular",
@@ -136,6 +138,26 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 
 AUTH_USER_MODEL = "user.CustomUser"
 
-from config.settings.rest_framework import *
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
+
+
+# Django Debug Toolbar check testing
+TESTING = "test" in sys.argv or "PYTEST_VERSION" in os.environ
+
+if not TESTING:
+    INSTALLED_APPS = [
+        *INSTALLED_APPS,
+        "debug_toolbar",
+    ]
+    MIDDLEWARE = [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+        *MIDDLEWARE,
+    ]
+
+
 from config.settings.drf_spectacular import *
 from config.settings.drf_standartized_errors import *
+from config.settings.rest_framework import *
+from config.settings.django_debug_toolbar import *
