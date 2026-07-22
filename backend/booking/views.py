@@ -8,6 +8,9 @@ from rest_framework.views import APIView
 from .models import Booking
 from .serializers import BookingReadSerializer, BookingWriteSerializer
 from .services import BookingService
+from payment.services import PaymentService
+from .exceptions import BookingStatusException
+from rest_framework.exceptions import ValidationError
 
 
 class BookingRetrieveView(APIView):
@@ -40,7 +43,7 @@ class BookingCreateView(APIView):
 
 class BookingDeleteView(APIView):
     # add permission
-    
+
     def delete(self, request, pk: None):
         BookingService.delete(pk=pk)
         return Response(data="Successfully deleted", status=status.HTTP_200_OK)
@@ -68,3 +71,12 @@ class BookingListView(APIView):
 
         serializer = BookingReadSerializer(booking_list, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class BookingPayView(APIView):
+    def post(self, request, pk: int | None):
+        try:
+            result = PaymentService.create_payment(user=request.user, booking_pk=pk)
+            return Response(result)
+        except BookingStatusException as e:
+            raise ValidationError({"detail": e})

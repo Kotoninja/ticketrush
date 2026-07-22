@@ -5,6 +5,7 @@ from .views import (
     BookingDeleteView,
     BookingListView,
     BookingRetrieveView,
+    BookingPayView,
 )
 
 urlpatterns = [
@@ -16,4 +17,5 @@ urlpatterns = [
     ),
     path("", BookingCreateView.as_view(), name="booking-list"),
     path("list/", BookingListView.as_view(), name="booking-list"),
+    path("<int:pk>/pay/", BookingPayView.as_view(), name="booking-list"),
 ]
