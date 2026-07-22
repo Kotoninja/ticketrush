@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_spectacular",
     "drf_standardized_errors",
+    "django_celery_results",
 ]
 
 MIDDLEWARE = [
@@ -161,3 +162,4 @@ from config.settings.drf_spectacular import *
 from config.settings.drf_standartized_errors import *
 from config.settings.rest_framework import *
 from config.settings.django_debug_toolbar import *
+from config.settings.celery_configuration_options import *

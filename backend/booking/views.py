@@ -1,6 +1,5 @@
 from typing import cast
 
-from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import status
 from rest_framework.response import Response
@@ -13,8 +12,8 @@ from .services import BookingService
 
 class BookingRetrieveView(APIView):
     def get(self, request, seat_session_pk):
-        booking_instance = get_object_or_404(
-            Booking.objects.all(), user=request.user, seat_session=seat_session_pk
+        booking_instance = BookingService.get_object(
+            request=request, seat_session=seat_session_pk
         )
         serializer = BookingReadSerializer(booking_instance)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -40,8 +39,10 @@ class BookingCreateView(APIView):
 
 
 class BookingDeleteView(APIView):
+    # add permission
+    
     def delete(self, request, pk: None):
-        BookingService.delete(user=request.user, pk=pk)
+        BookingService.delete(pk=pk)
         return Response(data="Successfully deleted", status=status.HTTP_200_OK)
 
 
@@ -55,14 +56,15 @@ class BookingListView(APIView):
     def get(self, request):
         booking_list = Booking.objects.select_related(
             "seat_session__event_session__hall__venue"
-        ).filter(user=request.user)
+        )
 
-        if venue_pk := request.query_params.get("venue_pk"):
-            booking_list = booking_list.filter(
-                seat_session__event_session__hall__venue=venue_pk
-            )
+        venue_pk = request.query_params.get("venue_pk")
 
-        if booking_list:
-            serializer = BookingReadSerializer(booking_list, many=True)
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
-        return Response(data=[], status=status.HTTP_200_OK)
+        booking_list = BookingService.get_queryset(
+            request=request,
+            queryset=booking_list,
+            seat_session__event_session__hall__venue=venue_pk,
+        )
+
+        serializer = BookingReadSerializer(booking_list, many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)

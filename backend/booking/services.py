@@ -1,9 +1,15 @@
+from typing import cast
+
+from celery import Task
 from django.db import transaction
-from rest_framework.exceptions import ValidationError
+from django.db.models import QuerySet
+from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import ValidationError, NotFound
 from session.models import SeatSession
 from session.services import SeatSessionService
 from user.models import CustomUser
 
+from booking import filters
 from booking.models import Booking
 
 
@@ -13,14 +19,37 @@ class BookingService:
         user: CustomUser | None, seat_session: SeatSession | None
     ) -> None:
         if not user:
-            raise ValueError("user is required")
+            raise ValidationError({"user":"user is required"})
 
         if not seat_session:
-            raise ValueError("seat_session is required")
+            raise ValidationError({"seat_session":"seat_session is required"})
+
+    @staticmethod
+    def get_object(request, *args, **kwargs) -> Booking:
+        object = get_object_or_404(
+            Booking.objects.filter(filters.availiable()), user=request.user, **kwargs
+        )
+
+        return object
+
+    @staticmethod
+    def get_queryset(
+        request, queryset: None | QuerySet[Booking] = None, *args, **kwargs
+    ):
+        if queryset is None:
+            queryset = Booking.objects.all()
+
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        queryset = queryset.filter(**kwargs)
+
+        queryset = queryset.filter(user=request.user)
+        return queryset
 
     @staticmethod
     @transaction.atomic
     def create(*, user: CustomUser, seat_session: SeatSession) -> Booking:
+        from booking.tasks import draft_seat
+
         BookingService._check_user_and_seat_session(user, seat_session)
 
         SeatSessionService.set_status(seat_session.pk, status="pending")
@@ -29,41 +58,28 @@ class BookingService:
             user=user, seat_session=seat_session
         )
 
+        cast(Task, draft_seat).apply_async(
+            kwargs={"pk": new_booking_instance.pk}, countdown=300
+        )
+
         return new_booking_instance
 
     @staticmethod
     @transaction.atomic
-    def delete(*, user: CustomUser, pk: int | None) -> tuple[int, dict[str, int]]:
-        try:
-            booking = Booking.objects.get(user=user, pk=pk)
-            SeatSessionService.set_status(booking.seat_session.pk, status="free")
+    def delete(*, pk: int | None) -> tuple[int, dict[str, int]]:
+        booking = get_object_or_404(Booking, pk=pk)
+        SeatSessionService.set_status(booking.seat_session.pk, status="free")
 
-            return booking.delete()
-        except Booking.DoesNotExist:
-            raise ValidationError(f" object with {pk} pk does not exist")
+        return booking.delete()
 
     @staticmethod
     @transaction.atomic
     def confirm(*, user: CustomUser, seat_session: SeatSession):
         BookingService._check_user_and_seat_session(user, seat_session)
 
-        if Booking.objects.get(user=user, seat_session=seat_session):
+        if Booking.objects.filter(user=user, seat_session=seat_session).exists():
             SeatSessionService.set_status(seat_session.pk, status="busy")
-
-        raise ValidationError(
-            f"Object with user - {user} and seat_session - {seat_session.pk}"
-        )
-
-    @staticmethod
-    @transaction.atomic
-    def canceled(*, user: CustomUser, seat_session: SeatSession):
-        BookingService._check_user_and_seat_session(user, seat_session)
-
-        if booking := Booking.objects.get(user=user, seat_session=seat_session):
-            SeatSessionService.set_status(seat_session.pk, status="free")
-
-            booking.delete()
-
-        raise ValidationError(
-            f"Object with user - {user} and seat_session - {seat_session.pk}"
-        )
+        else:
+            raise NotFound(
+                f"Object with user - {user} and seat_session - {seat_session.pk}"
+            )
