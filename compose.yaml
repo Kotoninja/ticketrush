@@ -15,6 +15,7 @@ services:
       db:
         condition: service_healthy
         restart: true
+
   db:
     image: postgres:17-alpine
     container_name: db
@@ -31,19 +32,41 @@ services:
       - .env
     networks:
       - ticketnet
-    command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf", "-c", "hba_file=/var/lib/postgresql/data/pg_hba.conf"]
+    command:
+      [
+        "postgres",
+        "-c",
+        "config_file=/etc/postgresql/postgresql.conf",
+        "-c",
+        "hba_file=/var/lib/postgresql/data/pg_hba.conf",
+      ]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 10s
       retries: 5
       start_period: 30s
+
   redis:
     image: redis:8.8.0-alpine@sha256:9d317178eceac8454a2284a9e6df2466b93c745529947f0cd42a0fa9609d7005
     networks:
       - ticketnet
     ports:
-    - "6379:6379"
+      - "6379:6379"
+
+  celery-worker:
+    build: ./backend
+    command:
+      ["celery", "-A", "config.celery", "worker", "--loglevel=info"]
+    volumes:
+      - ./backend:/app
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - backend
+    networks:
+      - ticketnet
 
 networks:
   ticketnet:
