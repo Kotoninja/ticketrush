@@ -4,7 +4,7 @@ from celery import Task
 from django.db import transaction
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, NotFound
 from session.models import SeatSession
 from session.services import SeatSessionService
 from user.models import CustomUser
@@ -19,10 +19,10 @@ class BookingService:
         user: CustomUser | None, seat_session: SeatSession | None
     ) -> None:
         if not user:
-            raise ValueError("user is required")
+            raise ValidationError({"user":"user is required"})
 
         if not seat_session:
-            raise ValueError("seat_session is required")
+            raise ValidationError({"seat_session":"seat_session is required"})
 
     @staticmethod
     def get_object(request, *args, **kwargs) -> Booking:
@@ -79,7 +79,7 @@ class BookingService:
 
         if Booking.objects.filter(user=user, seat_session=seat_session).exists():
             SeatSessionService.set_status(seat_session.pk, status="busy")
-
-        raise ValidationError(
-            f"Object with user - {user} and seat_session - {seat_session.pk}"
-        )
+        else:
+            raise NotFound(
+                f"Object with user - {user} and seat_session - {seat_session.pk}"
+            )
