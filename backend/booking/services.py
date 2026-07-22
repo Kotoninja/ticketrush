@@ -1,3 +1,6 @@
+from typing import cast
+
+from celery import Task
 from django.db import transaction
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
@@ -8,6 +11,7 @@ from user.models import CustomUser
 
 from booking import filters
 from booking.models import Booking
+
 
 class BookingService:
     @staticmethod
@@ -54,7 +58,9 @@ class BookingService:
             user=user, seat_session=seat_session
         )
 
-        draft_seat.apply_async(kwargs= {"pk": new_booking_instance.pk}, countdown = 300)
+        cast(Task, draft_seat).apply_async(
+            kwargs={"pk": new_booking_instance.pk}, countdown=300
+        )
 
         return new_booking_instance
 
@@ -63,7 +69,7 @@ class BookingService:
     def delete(*, pk: int | None) -> tuple[int, dict[str, int]]:
         booking = get_object_or_404(Booking, pk=pk)
         SeatSessionService.set_status(booking.seat_session.pk, status="free")
-        
+
         return booking.delete()
 
     @staticmethod
