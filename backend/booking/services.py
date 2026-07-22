@@ -9,7 +9,6 @@ from user.models import CustomUser
 from booking import filters
 from booking.models import Booking
 
-
 class BookingService:
     @staticmethod
     def _check_user_and_seat_session(
@@ -45,6 +44,8 @@ class BookingService:
     @staticmethod
     @transaction.atomic
     def create(*, user: CustomUser, seat_session: SeatSession) -> Booking:
+        from booking.tasks import draft_seat
+
         BookingService._check_user_and_seat_session(user, seat_session)
 
         SeatSessionService.set_status(seat_session.pk, status="pending")
@@ -52,6 +53,8 @@ class BookingService:
         new_booking_instance = Booking.objects.create(
             user=user, seat_session=seat_session
         )
+
+        draft_seat.apply_async(kwargs= {"pk": new_booking_instance.pk}, countdown = 300)
 
         return new_booking_instance
 
