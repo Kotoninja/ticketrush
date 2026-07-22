@@ -4,7 +4,7 @@ from celery import Task
 from django.db import transaction
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
-from rest_framework.exceptions import ValidationError, NotFound
+from rest_framework.exceptions import NotFound, ValidationError
 from session.models import SeatSession
 from session.services import SeatSessionService
 from user.models import CustomUser
@@ -39,8 +39,8 @@ class BookingService:
         if queryset is None:
             queryset = Booking.objects.all()
 
-        kwargs = {k: v for k, v in kwargs.items() if v is not None}
-        queryset = queryset.filter(**kwargs)
+        filtered_kwargs: dict = {k: v for k, v in kwargs.items() if v is not None}
+        queryset = queryset.filter(**filtered_kwargs)
 
         queryset = queryset.filter(user=request.user)
         return queryset
@@ -66,20 +66,14 @@ class BookingService:
 
     @staticmethod
     @transaction.atomic
-    def delete(*, pk: int | None) -> tuple[int, dict[str, int]]:
-        booking = get_object_or_404(Booking, pk=pk)
+    def delete(*, booking: Booking) -> tuple[int, dict[str, int]]:
         SeatSessionService.set_status(booking.seat_session.pk, status="free")
-
         return booking.delete()
 
     @staticmethod
     @transaction.atomic
-    def confirm(*, user: CustomUser, seat_session: SeatSession):
-        BookingService._check_user_and_seat_session(user, seat_session)
+    def confirm(*, booking: Booking):
+        booking.status = "paid"
+        booking.save()
+        SeatSessionService.set_status(booking.seat_session.pk, status="busy")
 
-        if Booking.objects.filter(user=user, seat_session=seat_session).exists():
-            SeatSessionService.set_status(seat_session.pk, status="busy")
-        else:
-            raise NotFound(
-                f"Object with user - {user} and seat_session - {seat_session.pk}"
-            )
