@@ -5,7 +5,7 @@ from booking.models import Booking
 
 class Payment(BaseModel):
     BOOKING_STATUS = (
-        ("draft", "Draft"),
+        ("pending", "Pending"),
         ("paid", "Paid"),
         ("cancelled", "Cancelled"),
     )
