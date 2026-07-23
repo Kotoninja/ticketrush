@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "event",
     "session",
     "booking",
+    "payment",
     # Third party-packages
     "rest_framework",
     "drf_spectacular",

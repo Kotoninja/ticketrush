@@ -1,10 +1,14 @@
 from typing import cast
 
+from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiParameter, extend_schema
+from payment.services import PaymentService
 from rest_framework import status
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .exceptions import BookingStatusException
 from .models import Booking
 from .serializers import BookingReadSerializer, BookingWriteSerializer
 from .services import BookingService
@@ -40,9 +44,10 @@ class BookingCreateView(APIView):
 
 class BookingDeleteView(APIView):
     # add permission
-    
+
     def delete(self, request, pk: None):
-        BookingService.delete(pk=pk)
+        booking = get_object_or_404(Booking, pk=pk)
+        BookingService.delete(booking=booking)
         return Response(data="Successfully deleted", status=status.HTTP_200_OK)
 
 
@@ -68,3 +73,12 @@ class BookingListView(APIView):
 
         serializer = BookingReadSerializer(booking_list, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class BookingPayView(APIView):
+    def post(self, request, pk: int | None):
+        try:
+            result = PaymentService.create_payment(user=request.user, booking_pk=pk)
+            return Response(result)
+        except BookingStatusException as e:
+            raise ValidationError({"detail": e})

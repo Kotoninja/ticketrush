@@ -43,6 +43,7 @@ urlpatterns = [
     path("api/venue/", include("venue.urls")),
     path("api/session/", include("session.urls")),
     path("api/booking/", include("booking.urls")),
+    path("api/payment/", include("payment.urls"))
 ]
 
 

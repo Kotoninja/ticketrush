@@ -27,8 +27,7 @@ class BookingAdmin(admin.ModelAdmin):
 
     @transaction.atomic
     def delete_queryset(self, request: HttpRequest, queryset: QuerySet) -> None:
-        for queryset_pk in queryset.values_list("pk", flat=True):
-            print(queryset_pk)
-            BookingService.delete(pk=queryset_pk)
+        for booking in queryset:
+            BookingService.delete(booking=booking)
 
         queryset.delete()
