@@ -5,9 +5,10 @@ from booking.services import BookingService
 
 @shared_task
 def draft_seat(pk: int):
+    Booking.objects.select_related("seat_session")
+
     try:
-        Booking.objects.select_related("seat_session")
-        if Booking.objects.get(pk=pk).seat_session.status == "pending":
-            BookingService.delete(pk=pk)
+        booking = Booking.objects.get(pk=pk, seat_session__status="pending")
+        BookingService.delete(booking=booking)
     except Booking.DoesNotExist:
         pass
