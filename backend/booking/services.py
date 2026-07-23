@@ -74,6 +74,6 @@ class BookingService:
     @transaction.atomic
     def confirm(*, booking: Booking):
         booking.status = "paid"
-        booking.save()
+        booking.save(update_fields=["status"])
         SeatSessionService.set_status(booking.seat_session.pk, status="busy")
 
