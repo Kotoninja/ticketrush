@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING
 
-from django.db.models import Q
 from rest_framework.exceptions import ValidationError
 
 if TYPE_CHECKING:
@@ -13,10 +12,14 @@ def user_have_draft_event_session(booking_instance: Booking):
     """
     from .models import Booking
 
-    has_draft_bookings = Booking.objects.filter(
-        seat_session__event_session=booking_instance.seat_session.event_session,
-        status="draft",
-    ).exists()
+    has_draft_bookings = (
+        Booking.objects.filter(
+            seat_session__event_session=booking_instance.seat_session.event_session,
+            status="draft",
+        )
+        .exclude(pk=booking_instance.pk)
+        .exists()
+    )
 
     if has_draft_bookings:
         raise ValidationError(
