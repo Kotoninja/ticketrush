@@ -21,7 +21,6 @@ from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import (
     SpectacularAPIView,
-    SpectacularRedocView,
     SpectacularSwaggerView,
 )
 
@@ -39,11 +38,12 @@ urlpatterns = [
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),  # Drf-spectacular Optional UI
+    path("silk/", include("silk.urls", namespace="silk")),  # Django-silk
     # My app
     path("api/venue/", include("venue.urls")),
     path("api/session/", include("session.urls")),
     path("api/booking/", include("booking.urls")),
-    path("api/payment/", include("payment.urls"))
+    path("api/payment/", include("payment.urls")),
 ]
 
 
