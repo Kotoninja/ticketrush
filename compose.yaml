@@ -57,7 +57,19 @@ services:
   celery-worker:
     build: ./backend
     command:
-      ["celery", "-A", "config.celery", "worker", "--loglevel=info"]
+      [
+        "watchmedo",
+        "auto-restart",
+        "--directory=./",
+        "--pattern=*tasks.py",
+        "--recursive",
+        "--",
+        "celery",
+        "-A",
+        "config.celery",
+        "worker",
+        "--loglevel=INFO",
+      ]
     volumes:
       - ./backend:/app
     env_file:
