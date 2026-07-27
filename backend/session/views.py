@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from .models import EventSession, SeatSession
 from .serializers import (
     EventSessionReadSerializer,
+    EventSessionRetrieveSerializer,
     EventSessionWriteSerializer,
     SeatSessionWithFullDetail,
 )
@@ -33,7 +34,8 @@ class EventSessionAPI(viewsets.ModelViewSet):
             OpenApiParameter("venue", type=int, description="Sort events by venue")
         ],
         summary="All sessions of the event",
-        description="You can also specify the venue to filter."
+        description="You can also specify the venue to filter.",
+        operation_id="get_all_sessions",
     )
     def list(self, request):
 
@@ -55,10 +57,14 @@ class EventSessionAPI(viewsets.ModelViewSet):
                 status=status.HTTP_201_CREATED,
             )
 
-    @extend_schema(summary="Return all information about the event session")
+    @extend_schema(
+        summary="Return all information about the event session",
+        responses=EventSessionRetrieveSerializer(many=True),
+        operation_id="get_all_session_by_id",
+    )
     def retrieve(self, request, pk=None):
         event_session_instance = get_object_or_404(self.get_queryset(), pk=pk)
-        serializer = self.get_serializer(event_session_instance)
+        serializer = EventSessionRetrieveSerializer(event_session_instance)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
     @extend_schema(
