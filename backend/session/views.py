@@ -35,6 +35,7 @@ class EventSessionAPI(viewsets.ModelViewSet):
         ],
         summary="All sessions of the event",
         description="You can also specify the venue to filter.",
+        operation_id="get_all_sessions",
     )
     def list(self, request):
 
@@ -59,6 +60,7 @@ class EventSessionAPI(viewsets.ModelViewSet):
     @extend_schema(
         summary="Return all information about the event session",
         responses=EventSessionRetrieveSerializer(many=True),
+        operation_id="get_all_session_by_id",
     )
     def retrieve(self, request, pk=None):
         event_session_instance = get_object_or_404(self.get_queryset(), pk=pk)

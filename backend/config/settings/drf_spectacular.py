@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-SPECTACULAR_DEFAULTS: Dict[str, Any] = {
+SPECTACULAR_SETTINGS: Dict[str, Any] = {
     # A regex specifying the common denominator for all operation paths. If
     # SCHEMA_PATH_PREFIX is set to None, drf-spectacular will attempt to estimate
     # a common prefix. Use '' to disable.
@@ -96,7 +96,10 @@ SPECTACULAR_DEFAULTS: Dict[str, Any] = {
     "SORT_OPERATIONS": True,
     # enum name overrides. dict with keys "YourEnum" and their choice values "field.choices"
     # e.g. {'SomeEnum': ['A', 'B'], 'OtherEnum': 'import.path.to.choices'}
-    "ENUM_NAME_OVERRIDES": {},
+    "ENUM_NAME_OVERRIDES": {
+        "SeatSessionStatusEnum":"session.models.SeatSession.SEAT_STATUS",
+        "EventCategoryEnum":"event.models.Event.CATEGORY_LIST"
+    },
     # Adds "blank" and "null" enum choices where appropriate. disable on client generation issues
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": True,
     # Add/Append a list of (``choice value`` - choice name) to the enum description string.
@@ -172,7 +175,7 @@ SPECTACULAR_DEFAULTS: Dict[str, Any] = {
     # Statically set schema version. May also be an empty string. When used together with
     # view versioning, will become '0.0.0 (v2)' for 'v2' versioned requests.
     # Set VERSION to None if only the request version should be rendered.
-    "VERSION": "0SERVE_INCLUDE_SCHEMA.0.0",
+    "VERSION": "0.0.0",
     # Optional list of servers.
     # Each entry MUST contain "url", MAY contain "description", "variables"
     # e.g. [{'url': 'https://example.com/v1', 'description': 'Text'}, ...]

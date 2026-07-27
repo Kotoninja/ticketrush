@@ -8,7 +8,12 @@ from .services import WebhookService
 
 
 class WebhookView(APIView):
-    @extend_schema(request=WebhookSerializer, summary="Webhook from bank", description="<b>FAKE</b> webhook from bank")
+    @extend_schema(
+        request=WebhookSerializer,
+        responses=None,
+        summary="Webhook from bank",
+        description="<b>FAKE</b> webhook from bank",
+    )
     def post(self, request):
         serializer = WebhookSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
