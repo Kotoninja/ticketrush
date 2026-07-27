@@ -21,10 +21,9 @@ class Booking(BaseModel):
     status = models.CharField(choices=BOOKING_STATUS, default="draft")
     draft_expire_time = models.DateTimeField(null=True, blank=True)
 
-    def is_available(self) -> bool:
-        if self.draft_expire_time and timezone.now() > self.draft_expire_time:
-            return False
-        return True
+    def is_available(self) -> bool | None:
+        if self.draft_expire_time:
+            return timezone.now() > self.draft_expire_time
 
     def clean(self):
         user_have_draft_event_session(self)
