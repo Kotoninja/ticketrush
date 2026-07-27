@@ -44,9 +44,9 @@ Users can register and the API distinguishes who's allowed to do what.
 
 ### Phase 3 — Seat booking engine
 The core feature: reserving a specific seat safely under concurrent load.
-- [ ] Booking flow with seat-level locking (no double booking)
-- [ ] Booking expiration (auto-release if unpaid in time)
-- [ ] Mock payment flow turning a booking into a sale
+- [x] Booking flow with seat-level locking (no double booking)
+- [x] Booking expiration (auto-release if unpaid in time)
+- [x] Mock payment flow turning a booking into a sale
 
 ### Phase 4 — Live seat map (realtime)
 Everyone looking at the same session sees seat status changes instantly.
