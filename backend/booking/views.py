@@ -19,6 +19,7 @@ class BookingRetrieveView(APIView):
     @extend_schema(
         summary="Find a reservation instance by seat",
         description="Find a reservation instance by seat ID. Return a single object.",
+        responses={200: BookingReadSerializer},
     )
     def get(self, request, seat_session_pk):
         booking_instance = BookingService.get_object(
@@ -53,11 +54,11 @@ class BookingCreateView(APIView):
 
 class BookingDeleteView(APIView):
     # add permission
-    @extend_schema(summary="Delete reservation")
+    @extend_schema(request=None, responses=None, summary="Delete reservation")
     def delete(self, request, pk: None):
         booking = get_object_or_404(Booking, pk=pk)
         BookingService.delete(booking=booking)
-        return Response(data="Successfully deleted", status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class BookingListView(APIView):
@@ -67,7 +68,7 @@ class BookingListView(APIView):
             OpenApiParameter("venue_pk", type=int, description="search by venue")
         ],
         summary="All bookings",
-        description="You can also specify a venue to filter."
+        description="You can also specify a venue to filter.",
     )
     def get(self, request):
         booking_list = Booking.objects.select_related(
@@ -88,6 +89,8 @@ class BookingListView(APIView):
 
 class BookingPayView(APIView):
     @extend_schema(
+        request=None,
+        responses=None,
         summary="Pay reservation",
         description='This is a FAKE payment. After receiving the response, insert the UUI from "payment_url" into the "/api/payment/webhook" payment_id. This will reserve a seat in the event session.',
     )

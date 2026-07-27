@@ -7,7 +7,7 @@ from .models import Booking
 class BookingReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = Booking
-        exclude = ["user"]
+        exclude = ["user", "created_at", "updated_at"]
 
     seat_session = SeatSessionWithFullDetail()
 
