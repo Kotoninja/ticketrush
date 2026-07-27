@@ -166,3 +166,4 @@ from config.settings.drf_standartized_errors import *
 from config.settings.rest_framework import *
 from config.settings.django_debug_toolbar import *
 from config.settings.celery_configuration_options import *
+from config.settings.django_silk import *
