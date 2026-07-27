@@ -31,7 +31,9 @@ class EventSessionAPI(viewsets.ModelViewSet):
     @extend_schema(
         parameters=[
             OpenApiParameter("venue", type=int, description="Sort events by venue")
-        ]
+        ],
+        summary="All sessions of the event",
+        description="You can also specify the venue to filter."
     )
     def list(self, request):
 
@@ -43,6 +45,7 @@ class EventSessionAPI(viewsets.ModelViewSet):
         serializer = self.get_serializer(events, many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
+    @extend_schema(summary="Create an event session")
     def create(self, request):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -52,6 +55,7 @@ class EventSessionAPI(viewsets.ModelViewSet):
                 status=status.HTTP_201_CREATED,
             )
 
+    @extend_schema(summary="Return all information about the event session")
     def retrieve(self, request, pk=None):
         event_session_instance = get_object_or_404(self.get_queryset(), pk=pk)
         serializer = self.get_serializer(event_session_instance)
@@ -61,7 +65,9 @@ class EventSessionAPI(viewsets.ModelViewSet):
         parameters=[
             OpenApiParameter("search", type=str, description="search events by name"),
             OpenApiParameter("venue", type=int, description="search by venue"),
-        ]
+        ],
+        summary="Search event session by name",
+        description="You can also specify the venue to filter.",
     )
     @action(detail=False)
     def search(self, request):
@@ -78,6 +84,7 @@ class SeatSessionAPI(generics.RetrieveAPIView):
     queryset = SeatSession.objects.all()
     serializer_class = SeatSessionWithFullDetail
 
+    @extend_schema(summary="Return all information about seat session")
     def get(self, request, event_session_pk, seat_session_pk):
         seat_session_instance = get_object_or_404(
             self.get_queryset(), event_session=event_session_pk, pk=seat_session_pk

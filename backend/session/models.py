@@ -24,7 +24,7 @@ class EventSession(BaseModel):
         ]
 
     def clean(self):
-        if self.timestamp <= timezone.now(): # add if self.timsestamp and (...)
+        if self.timestamp <= timezone.now():  # add if self.timsestamp and (...)
             raise DjangoValidationError(
                 {
                     "timestamp": "The event session timestamp cannot be less than the current time."
@@ -55,6 +55,7 @@ class SeatSession(BaseModel):
         ("pending", "Pending"),
         ("busy", "Busy"),
     ]
+
     event_session = models.ForeignKey(
         to=EventSession, on_delete=models.CASCADE, related_name="seats"
     )
