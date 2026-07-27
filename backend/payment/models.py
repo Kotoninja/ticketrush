@@ -1,6 +1,6 @@
-from django.db import models
-from common.models import BaseModel
 from booking.models import Booking
+from common.models import BaseModel
+from django.db import models
 
 
 class Payment(BaseModel):

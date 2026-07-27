@@ -1,6 +1,8 @@
 from celery import shared_task
-from .models import Booking
+
 from booking.services import BookingService
+
+from .models import Booking
 
 
 @shared_task

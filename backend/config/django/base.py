@@ -53,9 +53,11 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "drf_standardized_errors",
     "django_celery_results",
+    "silk",
 ]
 
 MIDDLEWARE = [
+    "silk.middleware.SilkyMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -159,8 +161,9 @@ if not TESTING:
     ]
 
 
+from config.settings.celery_configuration_options import *
+from config.settings.django_debug_toolbar import *
+from config.settings.django_silk import *
 from config.settings.drf_spectacular import *
 from config.settings.drf_standartized_errors import *
 from config.settings.rest_framework import *
-from config.settings.django_debug_toolbar import *
-from config.settings.celery_configuration_options import *

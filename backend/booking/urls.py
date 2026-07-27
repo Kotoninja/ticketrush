@@ -4,8 +4,8 @@ from .views import (
     BookingCreateView,
     BookingDeleteView,
     BookingListView,
-    BookingRetrieveView,
     BookingPayView,
+    BookingRetrieveView,
 )
 
 urlpatterns = [

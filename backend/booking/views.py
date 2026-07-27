@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from silk.profiling.profiler import silk_profile
 
 from .exceptions import BookingStatusException
 from .models import Booking
@@ -15,6 +16,10 @@ from .services import BookingService
 
 
 class BookingRetrieveView(APIView):
+    @extend_schema(
+        summary="Find a reservation instance by seat",
+        description="Find a reservation instance by seat ID. Return a single object.",
+    )
     def get(self, request, seat_session_pk):
         booking_instance = BookingService.get_object(
             request=request, seat_session=seat_session_pk
@@ -24,8 +29,12 @@ class BookingRetrieveView(APIView):
 
 
 class BookingCreateView(APIView):
+    @silk_profile()
     @extend_schema(
-        request=BookingWriteSerializer, responses={201: BookingReadSerializer}
+        request=BookingWriteSerializer,
+        responses={201: BookingReadSerializer},
+        summary="Reserve a seat session in the hall",
+        description='Assign the seat status to "draft". If the reservation is not paid for within 5 minutes, the seat status will be reset and the reservation will be deleted.',
     )
     def post(self, request):
         serializer = BookingWriteSerializer(data=request.data)
@@ -44,7 +53,7 @@ class BookingCreateView(APIView):
 
 class BookingDeleteView(APIView):
     # add permission
-
+    @extend_schema(summary="Delete reservation")
     def delete(self, request, pk: None):
         booking = get_object_or_404(Booking, pk=pk)
         BookingService.delete(booking=booking)
@@ -57,6 +66,8 @@ class BookingListView(APIView):
         parameters=[
             OpenApiParameter("venue_pk", type=int, description="search by venue")
         ],
+        summary="All bookings",
+        description="You can also specify a venue to filter."
     )
     def get(self, request):
         booking_list = Booking.objects.select_related(
@@ -76,6 +87,10 @@ class BookingListView(APIView):
 
 
 class BookingPayView(APIView):
+    @extend_schema(
+        summary="Pay reservation",
+        description='This is a FAKE payment. After receiving the response, insert the UUI from "payment_url" into the "/api/payment/webhook" payment_id. This will reserve a seat in the event session.',
+    )
     def post(self, request, pk: int | None):
         try:
             result = PaymentService.create_payment(user=request.user, booking_pk=pk)

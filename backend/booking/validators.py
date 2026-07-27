@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from django.db.models.manager import BaseManager
 from rest_framework.exceptions import ValidationError
 
 if TYPE_CHECKING:
@@ -12,16 +13,14 @@ def user_have_draft_event_session(booking_instance: Booking):
     """
     from .models import Booking
 
-    has_draft_bookings = (
-        Booking.objects.filter(
-            seat_session__event_session=booking_instance.seat_session.event_session,
-            status="draft",
-        )
-        .exclude(pk=booking_instance.pk)
-        .exists()
-    )
+    Booking.objects.select_related("seat_session_event_session")
 
-    if has_draft_bookings:
+    has_draft_bookings: BaseManager[Booking] = Booking.objects.filter(
+        seat_session__event_session=booking_instance.seat_session.event_session,
+        status="draft",
+    ).exclude(pk=booking_instance.pk)
+
+    if has_draft_bookings.exists():
         raise ValidationError(
-            "You are already book a space until [End Date]. Concurrent book are not possible. To book a new space, please end the current book early, wait until it ends, or contact support to arrange a replacement."
+            f"You are already book a space until {has_draft_bookings.first().draft_expire_time}. Concurrent book are not possible. To book a new space, please end the current book early, wait until it ends, or contact support to arrange a replacement."
         )

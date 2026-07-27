@@ -44,11 +44,10 @@ class SeatSessionService:
                     SeatSession.objects.select_for_update().get(pk=seat_session_pk)
                 )
 
-                if status == "pending":
-                    if seat_session_instance.status != "free":
-                        raise ValidationError(
-                            {"seat_session": "the place is already taken"}
-                        )
+                if status == "pending" and seat_session_instance.status != "free":
+                    raise ValidationError(
+                        {"seat_session": "the place is already taken"}
+                    )
 
                 seat_session_instance.status = status
                 seat_session_instance.save()
