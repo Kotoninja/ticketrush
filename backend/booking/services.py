@@ -90,11 +90,11 @@ class BookingService:
 
         BookingService._check_user_and_seat_session(user, seat_session)
 
-        SeatSessionService.set_status(seat_session.pk, status="pending")
-
         new_booking_instance = Booking.objects.create(
             user=user, seat_session=seat_session
         )
+
+        SeatSessionService.set_status(seat_session.pk, status="pending")
 
         cast(Task, draft_seat).apply_async(
             kwargs={"pk": new_booking_instance.pk}, countdown=300

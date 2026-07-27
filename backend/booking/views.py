@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from silk.profiling.profiler import silk_profile
 
 from .exceptions import BookingStatusException
 from .models import Booking
@@ -24,6 +25,7 @@ class BookingRetrieveView(APIView):
 
 
 class BookingCreateView(APIView):
+    @silk_profile()
     @extend_schema(
         request=BookingWriteSerializer, responses={201: BookingReadSerializer}
     )
