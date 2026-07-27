@@ -17,8 +17,8 @@ from .services import BookingService
 
 class BookingRetrieveView(APIView):
     @extend_schema(
-        summary="Find a reservation instance by seat ID",
-        description="Return a single object",
+        summary="Find a reservation instance by seat",
+        description="Find a reservation instance by seat ID. Return a single object.",
     )
     def get(self, request, seat_session_pk):
         booking_instance = BookingService.get_object(
@@ -33,8 +33,8 @@ class BookingCreateView(APIView):
     @extend_schema(
         request=BookingWriteSerializer,
         responses={201: BookingReadSerializer},
-        summary="Reserve a seat in the hall",
-        description='Reserve a seat in the hall. Assign the seat status to "draft." If the reservation is not paid for within 5 minutes, the seat status will be reset and the reservation will be deleted.',
+        summary="Reserve a seat session in the hall",
+        description='Assign the seat status to "draft". If the reservation is not paid for within 5 minutes, the seat status will be reset and the reservation will be deleted.',
     )
     def post(self, request):
         serializer = BookingWriteSerializer(data=request.data)
@@ -53,7 +53,7 @@ class BookingCreateView(APIView):
 
 class BookingDeleteView(APIView):
     # add permission
-    @extend_schema(summary="Delete a seat in the hall")
+    @extend_schema(summary="Delete reservation")
     def delete(self, request, pk: None):
         booking = get_object_or_404(Booking, pk=pk)
         BookingService.delete(booking=booking)
@@ -66,7 +66,8 @@ class BookingListView(APIView):
         parameters=[
             OpenApiParameter("venue_pk", type=int, description="search by venue")
         ],
-        summary="Search all reservations, you can also specify the venue",
+        summary="All bookings",
+        description="You can also specify a venue to filter."
     )
     def get(self, request):
         booking_list = Booking.objects.select_related(
