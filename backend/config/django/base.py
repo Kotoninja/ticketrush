@@ -30,6 +30,7 @@ ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS")
 
 INSTALLED_APPS = [
     # Django apps
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -162,6 +163,7 @@ if not TESTING:
 
 
 from config.settings.celery_configuration_options import *
+from config.settings.channels import *
 from config.settings.django_debug_toolbar import *
 from config.settings.django_silk import *
 from config.settings.drf_spectacular import *
