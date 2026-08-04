@@ -22,15 +22,13 @@ class MessageDataClass:
     status: str
 
 
-def booking_send_message(hall_id: int, venue_id: int, data: MessageDataClass):
+def booking_send_message(hall_id: int, data: MessageDataClass):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
-        f"booking_{hall_id}_{venue_id}",
-        {
-            "type": "booking_update",
-            "message": {"seat_id": data.seat_id, "status": data.status},
-        },
+        f"booking_{hall_id}",
+        {"type": "booking_update", "seat_id": data.seat_id, "status": data.status},
     )
+
 
 class BookingService:
     @staticmethod
@@ -116,11 +114,9 @@ class BookingService:
         SeatSessionService.set_status(seat_session.pk, status="pending")
 
         hall_id = seat_session.seat.hall_id
-        venue_id = seat_session.seat.hall.venue_id
 
         booking_send_message(
             hall_id=hall_id,
-            venue_id=venue_id,
             data=MessageDataClass(seat_id=seat_session.pk, status="pending"),
         )
 
@@ -149,13 +145,11 @@ class BookingService:
 
         seat_session = booking.seat_session
         hall_id = seat_session.seat.hall_id
-        venue_id = seat_session.seat.hall.venue_id
 
         SeatSessionService.set_status(booking.seat_session.pk, status="free")
 
         booking_send_message(
             hall_id=hall_id,
-            venue_id=venue_id,
             data=MessageDataClass(seat_id=seat_session.pk, status="free"),
         )
         return booking.delete()
@@ -181,10 +175,8 @@ class BookingService:
         SeatSessionService.set_status(seat_session_pk=seat_id, status="busy")
 
         hall_id = booking.seat_session.seat.hall_id
-        venue_id = booking.seat_session.seat.hall.venue_id
 
         booking_send_message(
             hall_id=hall_id,
-            venue_id=venue_id,
             data=MessageDataClass(seat_id=seat_id, status="busy"),
         )

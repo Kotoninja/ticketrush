@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TicketRush — My tickets</title>
+<link rel="stylesheet" href={% static "common/style.css" %}>
+<link rel="icon" type="image/png" href="{% static 'images/ticketrush_favicon.svg' %}">
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<main class="tr-main">
+  <p class="tr-eyebrow">Account</p>
+  <h1 style="font-size:32px;">My tickets</h1>
+  <p style="color:var(--muted); font-size:14px; max-width:52ch; margin-top:6px;">
+    Every reservation tied to your session — held, paid, or expired.
+  </p>
+
+  <div id="bookings-list" style="margin-top:32px;">
+    <p class="tr-skeleton">Loading your tickets…</p>
+  </div>
+</main>
+
+<div class="tr-toast" id="toast"></div>
+
+<script src={% static "common/api.js" %}></script>
+<script src={% static "common/nav.js" %}></script>
+<script src={% static "common/toast.js" %}></script>
+<script src={% static "common/bookings.js" %}></script>
+</body>
+</html>

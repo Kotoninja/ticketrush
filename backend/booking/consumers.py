@@ -13,9 +13,8 @@ class MessageResponseSerializer(serializers.Serializer):
 class BookingConsumer(AsyncWebsocketConsumer):
     @extend_ws_schema(responses={200: MessageResponseSerializer})
     async def connect(self):
-        self.venue_id = self.scope["url_route"]["kwargs"]["venue_id"]
         self.hall_id = self.scope["url_route"]["kwargs"]["hall_id"]
-        self.room_group_name = f"booking_{self.venue_id}_{self.hall_id}"
+        self.room_group_name = f"booking_{self.hall_id}"
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
@@ -25,6 +24,7 @@ class BookingConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def booking_update(self, event):
-        message = event["message"]
+        seat_id = event["seat_id"]
+        status = event["status"]
 
-        await self.send(text_data=json.dumps({"message": message}))
+        await self.send(text_data=json.dumps({"seat_id": seat_id, "status": status}))
