@@ -242,14 +242,59 @@ h1, h2, h3 {
   border-color: var(--ink);
 }
 
+/* ==========================================================================
+   Searchbar — исправленная версия с одинаковыми размерами
+   ========================================================================== */
+
 .tr-searchbar {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
+  align-items: flex-end;
   margin: 20px 0 32px;
+  flex-wrap: nowrap;
 }
-.tr-searchbar .input { flex: 1; min-width: 200px; }
-.tr-searchbar select.input { flex: 0 0 200px; }
+
+.tr-searchbar .field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Все поля ввода и кнопка одинаковой высоты */
+.tr-searchbar .input,
+.tr-searchbar select.input,
+.tr-searchbar .btn {
+  height: 48px;
+  font-size: 14.5px;
+  padding: 11px 14px;
+  box-sizing: border-box;
+}
+
+/* Кнопка на всю ширину своего контейнера */
+.tr-searchbar .btn {
+  width: 100%;
+  min-width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  .tr-searchbar {
+    flex-wrap: wrap;
+  }
+  
+  .tr-searchbar .field {
+    flex: 1 1 100% !important;
+    min-width: 100%;
+  }
+  
+  .tr-searchbar .field[style*="flex:0 0 auto"] {
+    flex: 1 1 100% !important;
+  }
+}
 
 /* ==========================================================================
    Hero
