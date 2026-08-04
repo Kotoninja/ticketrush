@@ -1,6 +1,9 @@
+from dataclasses import dataclass
 from typing import cast
 
+from asgiref.sync import async_to_sync
 from celery import Task
+from channels.layers import get_channel_layer
 from django.db import transaction
 from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
@@ -12,6 +15,22 @@ from user.models import CustomUser
 from booking import filters
 from booking.models import Booking
 
+
+@dataclass
+class MessageDataClass:
+    seat_id: int
+    status: str
+
+
+def booking_send_message(hall_id: int, venue_id: int, data: MessageDataClass):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"booking_{hall_id}_{venue_id}",
+        {
+            "type": "booking_update",
+            "message": {"seat_id": data.seat_id, "status": data.status},
+        },
+    )
 
 class BookingService:
     @staticmethod
@@ -96,6 +115,15 @@ class BookingService:
 
         SeatSessionService.set_status(seat_session.pk, status="pending")
 
+        hall_id = seat_session.seat.hall_id
+        venue_id = seat_session.seat.hall.venue_id
+
+        booking_send_message(
+            hall_id=hall_id,
+            venue_id=venue_id,
+            data=MessageDataClass(seat_id=seat_session.pk, status="pending"),
+        )
+
         cast(Task, draft_seat).apply_async(
             kwargs={"pk": new_booking_instance.pk}, countdown=300
         )
@@ -118,7 +146,18 @@ class BookingService:
                 model `delete()` call — the total number of objects deleted and
                 a dictionary mapping each model to the number of deletions.
         """
+
+        seat_session = booking.seat_session
+        hall_id = seat_session.seat.hall_id
+        venue_id = seat_session.seat.hall.venue_id
+
         SeatSessionService.set_status(booking.seat_session.pk, status="free")
+
+        booking_send_message(
+            hall_id=hall_id,
+            venue_id=venue_id,
+            data=MessageDataClass(seat_id=seat_session.pk, status="free"),
+        )
         return booking.delete()
 
     @staticmethod
@@ -137,4 +176,15 @@ class BookingService:
         """
         booking.status = "paid"
         booking.save(update_fields=["status"])
-        SeatSessionService.set_status(booking.seat_session.pk, status="busy")
+
+        seat_id = booking.seat_session.pk
+        SeatSessionService.set_status(seat_session_pk=seat_id, status="busy")
+
+        hall_id = booking.seat_session.seat.hall_id
+        venue_id = booking.seat_session.seat.hall.venue_id
+
+        booking_send_message(
+            hall_id=hall_id,
+            venue_id=venue_id,
+            data=MessageDataClass(seat_id=seat_id, status="busy"),
+        )

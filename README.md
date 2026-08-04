@@ -50,8 +50,8 @@ The core feature: reserving a specific seat safely under concurrent load.
 
 ### Phase 4 — Live seat map (realtime)
 Everyone looking at the same session sees seat status changes instantly.
-- [ ] WebSocket connection per event session
-- [ ] Live seat status broadcasting (booked / released / sold)
+- [x] WebSocket connection per event session
+- [x] Live seat status broadcasting (booked / released / sold)
 - [ ] (optional) live support chat on the event page
 
 ### Phase 5 — Background processing & notifications
