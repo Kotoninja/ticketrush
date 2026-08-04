@@ -52,6 +52,8 @@ INSTALLED_APPS = [
     # Third party-packages
     "rest_framework",
     "drf_spectacular",
+    "drf_spectacular_websocket",
+    "drf_spectacular_sidecar",
     "drf_standardized_errors",
     "django_celery_results",
     "silk",

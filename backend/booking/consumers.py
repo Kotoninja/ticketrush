@@ -1,12 +1,20 @@
 import json
 
 from channels.generic.websocket import AsyncWebsocketConsumer
+from drf_spectacular_websocket.decorators import extend_ws_schema
+from rest_framework import serializers
+
+
+class MessageResponseSerializer(serializers.Serializer):
+    seat_id = serializers.IntegerField()
+    status = serializers.ChoiceField(choices=["free", "draft", "busy"])
 
 
 class BookingConsumer(AsyncWebsocketConsumer):
+    @extend_ws_schema(responses={200: MessageResponseSerializer})
     async def connect(self):
         self.venue_id = self.scope["url_route"]["kwargs"]["venue_id"]
-        self.hall_id= self.scope["url_route"]["kwargs"]["hall_id"]
+        self.hall_id = self.scope["url_route"]["kwargs"]["hall_id"]
         self.room_group_name = f"booking_{self.venue_id}_{self.hall_id}"
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
