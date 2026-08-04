@@ -44,17 +44,6 @@ class BookingService:
         if not seat_session:
             raise ValidationError({"seat_session": "seat_session is required"})
 
-    # @staticmethod
-    # def _send_message(hall_id: int, venue_id: int, data: MessageDataClass):
-    #     channel_layer = get_channel_layer()
-    #     async_to_sync(channel_layer.group_send)(
-    #         f"booking_{hall_id}_{venue_id}",
-    #         {
-    #             "type": "booking_update",
-    #             "message": {"seat_id": data.seat_id, "status": data.status},
-    #         },
-    #     )
-
     @staticmethod
     def get_object(request, *args, **kwargs) -> Booking:
         """Return Booking object with user by request method and other Booking kwargs values
@@ -136,7 +125,7 @@ class BookingService:
         )
 
         cast(Task, draft_seat).apply_async(
-            kwargs={"pk": new_booking_instance.pk}, countdown=10
+            kwargs={"pk": new_booking_instance.pk}, countdown=300
         )
 
         return new_booking_instance
