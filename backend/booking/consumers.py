@@ -24,6 +24,7 @@ class BookingConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def booking_update(self, event):
-        message = event["message"]
+        seat_id = event["seat_id"]
+        status = event["status"]
 
-        await self.send(text_data=json.dumps({"message": message}))
+        await self.send(text_data=json.dumps({"seat_id": seat_id, "status": status}))

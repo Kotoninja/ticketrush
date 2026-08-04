@@ -26,10 +26,7 @@ def booking_send_message(hall_id: int, data: MessageDataClass):
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         f"booking_{hall_id}",
-        {
-            "type": "booking_update",
-            "message": {"seat_id": data.seat_id, "status": data.status},
-        },
+        {"type": "booking_update", "seat_id": data.seat_id, "status": data.status},
     )
 
 
