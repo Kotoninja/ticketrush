@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TicketRush — Choose a seat</title>
+<link rel="stylesheet" href={% static "common/style.css" %}>
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<main class="tr-main">
+
+  <a href="/" style="font-size:13px; color:var(--muted); text-decoration:none;">&larr; All sessions</a>
+
+  <div class="tr-session-head" id="session-head">
+    <div>
+      <p class="tr-eyebrow">Session</p>
+      <h1 id="event-name" style="font-size:32px;">Loading…</h1>
+      <div class="tr-session-head__meta" id="session-meta"></div>
+    </div>
+  </div>
+
+  <div class="tr-layout">
+    <div>
+      <div class="tr-stage">
+        <div class="tr-stage__curve"></div>
+        <span class="tr-stage__label">Stage</span>
+      </div>
+
+      <div id="seat-map">
+        <p class="seat-map__empty">Loading seats…</p>
+      </div>
+
+      <div class="seat-legend">
+        <span class="seat-legend__item"><span class="seat-legend__swatch seat-legend__swatch--free"></span>Free</span>
+        <span class="seat-legend__item"><span class="seat-legend__swatch seat-legend__swatch--pending"></span>Pending / held</span>
+        <span class="seat-legend__item"><span class="seat-legend__swatch seat-legend__swatch--busy"></span>Booked</span>
+      </div>
+      <p class="tr-seatmap-note">Row layout is generated from the seat list — the API doesn't expose real row/seat coordinates.</p>
+    </div>
+
+    <aside class="tr-panel" id="booking-panel">
+      <h3>Your seat</h3>
+      <p class="tr-panel__empty">Tap any green seat in the map to hold it. You'll have 5 minutes to complete payment before it's released.</p>
+    </aside>
+  </div>
+
+</main>
+
+<div class="tr-toast" id="toast"></div>
+
+<script src={% static "common/api.js" %}></script>
+<script src={% static "common/nav.js" %}></script>
+<script src={% static "common/toast.js" %}></script>
+<script src={% static "common/session.js" %}></script>
+</body>
+</html>

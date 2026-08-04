@@ -44,6 +44,7 @@ urlpatterns = [
     path("api/session/", include("session.urls")),
     path("api/booking/", include("booking.urls")),
     path("api/payment/", include("payment.urls")),
+    path("", include("common.urls")),
 ]
 
 

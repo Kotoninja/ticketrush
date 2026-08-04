@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TicketRush — Find a session</title>
+<link rel="stylesheet" href={% static "common/style.css" %}>
+</head>
+<body>
+
+<div id="site-nav"></div>
+
+<main class="tr-main">
+
+  <section class="tr-hero">
+    <p class="tr-eyebrow">Live seat availability</p>
+    <h1 class="tr-hero__title">Grab a seat<br><span>before it's gone.</span></h1>
+    <p class="tr-hero__sub">Browse every event session, see the hall fill up in real colour — green's open, amber's held, red's taken — and lock a seat in seconds.</p>
+  </section>
+
+  <div class="tr-searchbar">
+    <div class="field" style="flex:1; min-width:200px;">
+      <label for="search-input">Search events</label>
+      <input class="input" id="search-input" type="text" placeholder="Search by event name…">
+    </div>
+    <div class="field" style="flex:0 0 200px;">
+      <label for="venue-select">Venue</label>
+      <select class="input" id="venue-select">
+        <option value="">All venues</option>
+      </select>
+    </div>
+    <div class="field" style="flex:0 0 auto; justify-content:flex-end;">
+      <label>&nbsp;</label>
+      <button class="btn" id="search-btn">Search</button>
+    </div>
+  </div>
+
+  <div id="sessions-list">
+    <p class="tr-skeleton">Loading sessions…</p>
+  </div>
+
+</main>
+
+<div class="tr-toast" id="toast"></div>
+
+<script src={% static "common/api.js" %}></script>
+<script src={% static "common/nav.js" %}></script>
+<script src={% static "common/toast.js" %}></script>
+<script src={% static "common/home.js" %}></script>
+</body>
+</html>
