@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
@@ -97,7 +97,3 @@ class SeatSessionAPI(generics.RetrieveAPIView):
         )
         serializer = self.get_serializer(seat_session_instance)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
-
-
-def index(request):
-    return render(request, "session/index.html")
