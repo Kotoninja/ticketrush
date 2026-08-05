@@ -75,7 +75,7 @@ function renderBookings(bookings) {
       <div class="tr-empty-state">
         <h3>No tickets yet</h3>
         <p>Once you hold a seat, it'll show up here.</p>
-        <a class="btn" style="margin-top:16px;" href="index.html">Browse sessions</a>
+        <a class="btn" style="margin-top:16px;" href="/">Browse sessions</a>
       </div>`;
     return;
   }

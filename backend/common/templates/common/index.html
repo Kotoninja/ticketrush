@@ -1,46 +1,37 @@
-<!DOCTYPE html>
+{% extends "common/base.html" %}
 {% load static %}
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TicketRush — Find a session</title>
-<link rel="stylesheet" href={% static "common/style.css" %}>
-<link rel="icon" type="image/png" href="{% static 'images/ticketrush_favicon.svg' %}">
-</head>
-<body>
 
-<div id="site-nav"></div>
+{% block title %}TicketRush — Find a session{% endblock %}
 
-<main class="tr-main">
+{% block content %}
   <div class="tr-searchbar" role="search">
     <div class="field" style="flex:1; min-width:200px;">
-      <label for="search-input">Поиск событий</label>
+      <label for="search-input">Search for events</label>
       <input 
         class="input" 
         id="search-input" 
         type="text" 
-        placeholder="Название события…"
+        placeholder="Event name…"
         autocomplete="off"
-        aria-label="Поиск событий по названию"
+        aria-label="Search events by name"
       >
     </div>
     
     <div class="field" style="flex:0 0 200px;">
-      <label for="venue-select">Площадка</label>
-      <select class="input" id="venue-select" aria-label="Фильтр по площадке">
-        <option value="">Все площадки</option>
+      <label for="venue-select">Venue</label>
+      <select class="input" id="venue-select" aria-label="Filter by venue">
+        <option value="">All Venue</option>
       </select>
     </div>
     
     <div class="field" style="flex:0 0 auto; justify-content:flex-end;">
       <label>&nbsp;</label>
-      <button class="btn" id="search-btn" type="button" aria-label="Выполнить поиск">
+      <button class="btn" id="search-btn" type="button" aria-label="Perform a search">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
           <path d="M15 15L10.5 10.5M12 6.5C12 9.53757 9.53757 12 6.5 12C3.46243 12 1 9.53757 1 6.5C1 3.46243 3.46243 1 6.5 1C9.53757 1 12 3.46243 12 6.5Z" 
                 stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        Найти
+        Search
       </button>
     </div>
   </div>
@@ -48,14 +39,9 @@
   <div id="sessions-list">
     <p class="tr-skeleton">Loading sessions…</p>
   </div>
+{% endblock %}
 
-</main>
 
-<div class="tr-toast" id="toast"></div>
-
-<script src={% static "common/api.js" %}></script>
-<script src={% static "common/nav.js" %}></script>
-<script src={% static "common/toast.js" %}></script>
-<script src={% static "common/home.js" %}></script>
-</body>
-</html>
+{% block js %}
+<script src={% static "common/js/home.js" %}></script>
+{% endblock %}
