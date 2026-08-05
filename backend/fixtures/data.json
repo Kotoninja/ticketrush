@@ -1,0 +1,601 @@
+[
+{
+    "model": "session.eventsession",
+    "pk": 43,
+    "fields": {
+        "created_at": "2026-08-05T15:11:45.164Z",
+        "updated_at": "2026-08-05T15:11:45.164Z",
+        "event": 5,
+        "hall": 1,
+        "timestamp": "2026-08-06T15:11:45.160Z"
+    }
+},
+{
+    "model": "session.eventsession",
+    "pk": 44,
+    "fields": {
+        "created_at": "2026-08-05T15:13:35.004Z",
+        "updated_at": "2026-08-05T15:31:22.496Z",
+        "event": 3,
+        "hall": 4,
+        "timestamp": "2026-08-06T15:13:34Z"
+    }
+},
+{
+    "model": "session.eventsession",
+    "pk": 45,
+    "fields": {
+        "created_at": "2026-08-05T15:14:20.850Z",
+        "updated_at": "2026-08-05T15:14:20.850Z",
+        "event": 3,
+        "hall": 3,
+        "timestamp": "2026-08-08T15:00:00Z"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 296,
+    "fields": {
+        "created_at": "2026-08-05T15:11:45.182Z",
+        "updated_at": "2026-08-05T15:11:45.182Z",
+        "event_session": 43,
+        "seat": 1,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 297,
+    "fields": {
+        "created_at": "2026-08-05T15:11:45.182Z",
+        "updated_at": "2026-08-05T15:11:45.182Z",
+        "event_session": 43,
+        "seat": 2,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 298,
+    "fields": {
+        "created_at": "2026-08-05T15:11:45.182Z",
+        "updated_at": "2026-08-05T15:11:45.182Z",
+        "event_session": 43,
+        "seat": 3,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 299,
+    "fields": {
+        "created_at": "2026-08-05T15:11:45.182Z",
+        "updated_at": "2026-08-05T15:30:01.627Z",
+        "event_session": 43,
+        "seat": 4,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 300,
+    "fields": {
+        "created_at": "2026-08-05T15:11:45.182Z",
+        "updated_at": "2026-08-05T15:11:45.182Z",
+        "event_session": 43,
+        "seat": 5,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 301,
+    "fields": {
+        "created_at": "2026-08-05T15:11:45.182Z",
+        "updated_at": "2026-08-05T15:11:45.182Z",
+        "event_session": 43,
+        "seat": 6,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 302,
+    "fields": {
+        "created_at": "2026-08-05T15:11:45.182Z",
+        "updated_at": "2026-08-05T15:11:45.182Z",
+        "event_session": 43,
+        "seat": 7,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 303,
+    "fields": {
+        "created_at": "2026-08-05T15:11:45.182Z",
+        "updated_at": "2026-08-05T15:11:45.182Z",
+        "event_session": 43,
+        "seat": 8,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 304,
+    "fields": {
+        "created_at": "2026-08-05T15:11:45.182Z",
+        "updated_at": "2026-08-05T15:11:45.182Z",
+        "event_session": 43,
+        "seat": 9,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 305,
+    "fields": {
+        "created_at": "2026-08-05T15:11:45.182Z",
+        "updated_at": "2026-08-05T15:11:45.182Z",
+        "event_session": 43,
+        "seat": 10,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 306,
+    "fields": {
+        "created_at": "2026-08-05T15:11:45.182Z",
+        "updated_at": "2026-08-05T15:11:45.182Z",
+        "event_session": 43,
+        "seat": 11,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 307,
+    "fields": {
+        "created_at": "2026-08-05T15:14:20.855Z",
+        "updated_at": "2026-08-05T15:14:20.855Z",
+        "event_session": 45,
+        "seat": 12,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 308,
+    "fields": {
+        "created_at": "2026-08-05T15:14:20.855Z",
+        "updated_at": "2026-08-05T15:14:20.855Z",
+        "event_session": 45,
+        "seat": 13,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 309,
+    "fields": {
+        "created_at": "2026-08-05T15:14:20.855Z",
+        "updated_at": "2026-08-05T15:14:20.855Z",
+        "event_session": 45,
+        "seat": 14,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 310,
+    "fields": {
+        "created_at": "2026-08-05T15:31:22.501Z",
+        "updated_at": "2026-08-05T15:31:22.501Z",
+        "event_session": 44,
+        "seat": 15,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 311,
+    "fields": {
+        "created_at": "2026-08-05T15:31:22.501Z",
+        "updated_at": "2026-08-05T15:31:22.501Z",
+        "event_session": 44,
+        "seat": 16,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "session.seatsession",
+    "pk": 312,
+    "fields": {
+        "created_at": "2026-08-05T15:31:22.501Z",
+        "updated_at": "2026-08-05T15:31:22.501Z",
+        "event_session": 44,
+        "seat": 17,
+        "status": "free",
+        "price": "99.00"
+    }
+},
+{
+    "model": "hall.hall",
+    "pk": 1,
+    "fields": {
+        "created_at": "2026-07-08T16:11:01.897Z",
+        "updated_at": "2026-07-08T16:11:01.897Z",
+        "venue": 6,
+        "name": null,
+        "number": 1
+    }
+},
+{
+    "model": "hall.hall",
+    "pk": 3,
+    "fields": {
+        "created_at": "2026-07-09T20:08:24.683Z",
+        "updated_at": "2026-07-09T20:08:24.683Z",
+        "venue": 7,
+        "name": null,
+        "number": 1
+    }
+},
+{
+    "model": "hall.hall",
+    "pk": 4,
+    "fields": {
+        "created_at": "2026-07-09T20:08:30.281Z",
+        "updated_at": "2026-07-09T20:08:30.281Z",
+        "venue": 7,
+        "name": null,
+        "number": 2
+    }
+},
+{
+    "model": "event.event",
+    "pk": 3,
+    "fields": {
+        "created_at": "2026-08-05T15:01:46.737Z",
+        "updated_at": "2026-08-05T15:01:46.737Z",
+        "name": "The Godfather",
+        "small_description": null,
+        "description": null,
+        "duration": "02:55:00",
+        "age_available": "16",
+        "category": "cinema"
+    }
+},
+{
+    "model": "event.event",
+    "pk": 4,
+    "fields": {
+        "created_at": "2026-08-05T15:02:16.120Z",
+        "updated_at": "2026-08-05T15:02:16.120Z",
+        "name": "The Shawshank Redemption",
+        "small_description": null,
+        "description": null,
+        "duration": "02:22:00",
+        "age_available": "16",
+        "category": "cinema"
+    }
+},
+{
+    "model": "event.event",
+    "pk": 5,
+    "fields": {
+        "created_at": "2026-08-05T15:03:43.026Z",
+        "updated_at": "2026-08-05T15:03:43.026Z",
+        "name": "Forrest Gump",
+        "small_description": null,
+        "description": null,
+        "duration": "02:22:00",
+        "age_available": "16",
+        "category": "cinema"
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 1,
+    "fields": {
+        "created_at": "2026-07-08T18:46:22.443Z",
+        "updated_at": "2026-07-08T18:46:22.443Z",
+        "hall": 1,
+        "category": "standart",
+        "number": 1,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 2,
+    "fields": {
+        "created_at": "2026-07-08T18:46:26.330Z",
+        "updated_at": "2026-07-08T18:47:18.521Z",
+        "hall": 1,
+        "category": "standart",
+        "number": 2,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 3,
+    "fields": {
+        "created_at": "2026-07-08T18:47:21.385Z",
+        "updated_at": "2026-07-08T18:47:21.385Z",
+        "hall": 1,
+        "category": "standart",
+        "number": 3,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 4,
+    "fields": {
+        "created_at": "2026-07-08T18:47:23.552Z",
+        "updated_at": "2026-07-08T18:47:23.552Z",
+        "hall": 1,
+        "category": "standart",
+        "number": 4,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 5,
+    "fields": {
+        "created_at": "2026-07-08T18:47:25.367Z",
+        "updated_at": "2026-07-08T18:47:25.367Z",
+        "hall": 1,
+        "category": "standart",
+        "number": 5,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 6,
+    "fields": {
+        "created_at": "2026-07-08T18:47:28.823Z",
+        "updated_at": "2026-07-08T18:47:28.823Z",
+        "hall": 1,
+        "category": "comfort",
+        "number": 6,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 7,
+    "fields": {
+        "created_at": "2026-07-08T18:47:32.554Z",
+        "updated_at": "2026-07-08T18:47:32.554Z",
+        "hall": 1,
+        "category": "comfort",
+        "number": 7,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 8,
+    "fields": {
+        "created_at": "2026-07-08T18:47:36.844Z",
+        "updated_at": "2026-07-08T18:47:36.844Z",
+        "hall": 1,
+        "category": "comfort",
+        "number": 8,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 9,
+    "fields": {
+        "created_at": "2026-07-08T18:47:42.038Z",
+        "updated_at": "2026-07-08T18:47:42.038Z",
+        "hall": 1,
+        "category": "vip",
+        "number": 9,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 10,
+    "fields": {
+        "created_at": "2026-07-08T18:47:54.199Z",
+        "updated_at": "2026-07-08T18:47:54.199Z",
+        "hall": 1,
+        "category": "vip",
+        "number": 10,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 11,
+    "fields": {
+        "created_at": "2026-07-09T11:14:13.434Z",
+        "updated_at": "2026-07-09T11:14:13.434Z",
+        "hall": 1,
+        "category": "standart",
+        "number": 11,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 12,
+    "fields": {
+        "created_at": "2026-07-09T20:08:41.652Z",
+        "updated_at": "2026-07-09T20:08:41.652Z",
+        "hall": 3,
+        "category": "standart",
+        "number": 1,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 13,
+    "fields": {
+        "created_at": "2026-07-09T20:09:27.358Z",
+        "updated_at": "2026-07-09T20:09:37.417Z",
+        "hall": 3,
+        "category": "standart",
+        "number": 2,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 14,
+    "fields": {
+        "created_at": "2026-07-09T20:09:41.550Z",
+        "updated_at": "2026-07-09T20:09:41.550Z",
+        "hall": 3,
+        "category": "standart",
+        "number": 3,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 15,
+    "fields": {
+        "created_at": "2026-07-09T20:09:45.905Z",
+        "updated_at": "2026-07-09T20:09:45.905Z",
+        "hall": 4,
+        "category": "standart",
+        "number": 1,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 16,
+    "fields": {
+        "created_at": "2026-07-09T20:09:49.103Z",
+        "updated_at": "2026-07-09T20:09:49.103Z",
+        "hall": 4,
+        "category": "standart",
+        "number": 2,
+        "coordinates": null
+    }
+},
+{
+    "model": "seat.seat",
+    "pk": 17,
+    "fields": {
+        "created_at": "2026-07-09T20:09:51.371Z",
+        "updated_at": "2026-07-09T20:09:51.371Z",
+        "hall": 4,
+        "category": "standart",
+        "number": 3,
+        "coordinates": null
+    }
+},
+{
+    "model": "venue.venue",
+    "pk": 6,
+    "fields": {
+        "created_at": "2026-07-04T18:21:15.048Z",
+        "updated_at": "2026-07-04T18:21:15.048Z",
+        "created_by": 1,
+        "description": "Description: A boutique cinema tucked away in a re",
+        "name": "SpaceCinema",
+        "address": "Иваново, ул. К. Маркса, д. 45",
+        "site_link": "https://velvet-lantern.com/"
+    }
+},
+{
+    "model": "venue.venue",
+    "pk": 7,
+    "fields": {
+        "created_at": "2026-07-09T12:04:42.003Z",
+        "updated_at": "2026-08-05T14:59:41.030Z",
+        "created_by": 1,
+        "description": "A cozy theater with plush seats, classic vibes, and a modern lounge for drinks.",
+        "name": "Silver Screen",
+        "address": "string",
+        "site_link": "https://string.com"
+    }
+},
+{
+    "model": "venue.venue",
+    "pk": 8,
+    "fields": {
+        "created_at": "2026-08-05T15:00:29.261Z",
+        "updated_at": "2026-08-05T15:00:29.261Z",
+        "created_by": 2,
+        "description": "An outdoor and rooftop film space under the night sky.",
+        "name": "Starlight Cinema",
+        "address": "some adress",
+        "site_link": "https://starlight-cinema.com"
+    }
+},
+{
+    "model": "user.customuser",
+    "fields": {
+        "password": "pbkdf2_sha256$1200000$N4p78FxV9IjA1aDKTWZhV7$UYxwLADVMnZXDzDLKZ86dSh0+TqqTofKzbfvvciyCd8=",
+        "last_login": "2026-07-04T17:02:49.134Z",
+        "is_superuser": true,
+        "first_name": "",
+        "last_name": "",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2026-07-04T17:02:43.988Z",
+        "created_at": "2026-07-04T17:02:44.502Z",
+        "updated_at": "2026-07-04T17:02:44.502Z",
+        "email": "testemail@gmail.ru",
+        "groups": [],
+        "user_permissions": []
+    }
+},
+{
+    "model": "organization.organization",
+    "pk": 1,
+    "fields": {
+        "created_at": "2026-07-04T17:03:00.395Z",
+        "updated_at": "2026-07-04T17:03:00.395Z",
+        "created_by": [
+            "testemail@gmail.ru"
+        ],
+        "name": "Super",
+        "reference_id": "5597befd"
+    }
+},
+{
+    "model": "organization.organization",
+    "pk": 2,
+    "fields": {
+        "created_at": "2026-07-04T17:18:17.694Z",
+        "updated_at": "2026-07-04T17:18:17.694Z",
+        "created_by": [
+            "testemail@gmail.ru"
+        ],
+        "name": "Ghost",
+        "reference_id": "541e4c01"
+    }
+}
+]

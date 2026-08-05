@@ -80,6 +80,7 @@ git clone <repo>
 cd ticketrush
 cp .env.example .env
 docker-compose up --build
+docker-compose exec backend bash -c "python manage.py migrate && python manage.py loaddata fixtures/data.json"
 ```
 
 ## Photos
