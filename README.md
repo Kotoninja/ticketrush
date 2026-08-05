@@ -82,6 +82,10 @@ cp .env.example .env
 docker-compose up --build
 ```
 
+## Photos
+![Main page](photos/ticketrush_home.png)
+![Reservation system](photos/ticketrush_seats.png)
+
 ## License
 
 MIT
