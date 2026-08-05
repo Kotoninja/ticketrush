@@ -10,7 +10,7 @@ function renderNav(active) {
     <nav class="tr-nav">
       <div class="tr-nav__inner">
         <a class="tr-nav__logo" href="/">
-          <span class="tr-nav__logo-mark">TR</span>
+          <img class="tr-nav__logo-mark" src="/static/images/ticketrush_favicon.svg">
           <span class="tr-nav__logo-text">TICKET<em>RUSH</em></span>
         </a>
 
