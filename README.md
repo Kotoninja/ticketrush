@@ -83,6 +83,11 @@ docker-compose up --build
 docker-compose exec backend bash -c "python manage.py migrate && python manage.py loaddata fixtures/data.json"
 ```
 
+### Next after setting up
+open "localhost:8000/"  
+admin credentials: email=testemail@gmail.ru, password=1423
+
+
 ## Photos
 ![Main page](photos/ticketrush_home.png)
 ![Reservation system](photos/ticketrush_seats.png)
