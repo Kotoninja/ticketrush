@@ -1,4 +1,4 @@
-// common/websocket.js
+  // common/websocket.js
 class SeatWebSocket {
   constructor(hallId) {
     this.hallId = hallId;

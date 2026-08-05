@@ -1,18 +1,9 @@
-<!DOCTYPE html>
+{% extends "common/base.html" %}
 {% load static %}
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TicketRush — Find a session</title>
-<link rel="stylesheet" href={% static "common/style.css" %}>
-<link rel="icon" type="image/png" href="{% static 'images/ticketrush_favicon.svg' %}">
-</head>
-<body>
 
-<div id="site-nav"></div>
+{% block title %}TicketRush — Find a session{% endblock %}
 
-<main class="tr-main">
+{% block content %}
   <div class="tr-searchbar" role="search">
     <div class="field" style="flex:1; min-width:200px;">
       <label for="search-input">Поиск событий</label>
@@ -48,14 +39,9 @@
   <div id="sessions-list">
     <p class="tr-skeleton">Loading sessions…</p>
   </div>
+{% endblock %}
 
-</main>
 
-<div class="tr-toast" id="toast"></div>
-
-<script src={% static "common/api.js" %}></script>
-<script src={% static "common/nav.js" %}></script>
-<script src={% static "common/toast.js" %}></script>
-<script src={% static "common/home.js" %}></script>
-</body>
-</html>
+{% block js %}
+<script src={% static "common/js/home.js" %}></script>
+{% endblock %}
