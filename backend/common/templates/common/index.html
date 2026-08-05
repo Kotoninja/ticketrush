@@ -1,0 +1,47 @@
+{% extends "common/base.html" %}
+{% load static %}
+
+{% block title %}TicketRush — Find a session{% endblock %}
+
+{% block content %}
+  <div class="tr-searchbar" role="search">
+    <div class="field" style="flex:1; min-width:200px;">
+      <label for="search-input">Search for events</label>
+      <input 
+        class="input" 
+        id="search-input" 
+        type="text" 
+        placeholder="Event name…"
+        autocomplete="off"
+        aria-label="Search events by name"
+      >
+    </div>
+    
+    <div class="field" style="flex:0 0 200px;">
+      <label for="venue-select">Venue</label>
+      <select class="input" id="venue-select" aria-label="Filter by venue">
+        <option value="">All Venue</option>
+      </select>
+    </div>
+    
+    <div class="field" style="flex:0 0 auto; justify-content:flex-end;">
+      <label>&nbsp;</label>
+      <button class="btn" id="search-btn" type="button" aria-label="Perform a search">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+          <path d="M15 15L10.5 10.5M12 6.5C12 9.53757 9.53757 12 6.5 12C3.46243 12 1 9.53757 1 6.5C1 3.46243 3.46243 1 6.5 1C9.53757 1 12 3.46243 12 6.5Z" 
+                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Search
+      </button>
+    </div>
+  </div>
+
+  <div id="sessions-list">
+    <p class="tr-skeleton">Loading sessions…</p>
+  </div>
+{% endblock %}
+
+
+{% block js %}
+<script src={% static "common/js/home.js" %}></script>
+{% endblock %}

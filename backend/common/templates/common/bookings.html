@@ -1,0 +1,21 @@
+{% extends "common/base.html" %}
+{% load static %}
+
+{% block title %}TicketRush — My tickets{% endblock %}
+
+{% block content %}
+  <p class="tr-eyebrow">Account</p>
+  <h1 style="font-size:32px;">My tickets</h1>
+  <p style="color:var(--muted); font-size:14px; max-width:52ch; margin-top:6px;">
+    Every reservation tied to your session — held, paid, or expired.
+  </p>
+
+  <div id="bookings-list" style="margin-top:32px;">
+    <p class="tr-skeleton">Loading your tickets…</p>
+  </div>
+{% endblock %}
+
+
+{% block js %}
+<script src={% static "common/js/bookings.js" %}></script>
+{% endblock %}

@@ -32,9 +32,9 @@ postgres        → primary data store
 
 ### Phase 1 — Core domain & catalog
 Basic data model and a browsable API for events, with no booking logic yet.
-- [ ] Venues, halls, seat maps, events and sessions
-- [ ] Admin panel for managing the catalog
-- [ ] Public API: browse/search/filter events and sessions
+- [x] Venues, halls, seat maps, events and sessions
+- [x] Admin panel for managing the catalog
+- [x] Public API: browse/search/filter events and sessions
 
 ### Phase 2 — Accounts & access
 Users can register and the API distinguishes who's allowed to do what.
@@ -44,14 +44,14 @@ Users can register and the API distinguishes who's allowed to do what.
 
 ### Phase 3 — Seat booking engine
 The core feature: reserving a specific seat safely under concurrent load.
-- [ ] Booking flow with seat-level locking (no double booking)
-- [ ] Booking expiration (auto-release if unpaid in time)
-- [ ] Mock payment flow turning a booking into a sale
+- [x] Booking flow with seat-level locking (no double booking)
+- [x] Booking expiration (auto-release if unpaid in time)
+- [x] Mock payment flow turning a booking into a sale
 
 ### Phase 4 — Live seat map (realtime)
 Everyone looking at the same session sees seat status changes instantly.
-- [ ] WebSocket connection per event session
-- [ ] Live seat status broadcasting (booked / released / sold)
+- [x] WebSocket connection per event session
+- [x] Live seat status broadcasting (booked / released / sold)
 - [ ] (optional) live support chat on the event page
 
 ### Phase 5 — Background processing & notifications
@@ -80,7 +80,12 @@ git clone <repo>
 cd ticketrush
 cp .env.example .env
 docker-compose up --build
+docker-compose exec backend bash -c "python manage.py migrate && python manage.py loaddata fixtures/data.json"
 ```
+
+## Photos
+![Main page](photos/ticketrush_home.png)
+![Reservation system](photos/ticketrush_seats.png)
 
 ## License
 
