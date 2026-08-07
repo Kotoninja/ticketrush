@@ -92,6 +92,10 @@ admin credentials: email=testemail@gmail.ru, password=1423
 ![Main page](photos/ticketrush_home.png)
 ![Reservation system](photos/ticketrush_seats.png)
 
+## Database schema
+
+[link](https://drawsql.app/teams/kotoninja/diagrams/ticketrush)
+
 ## License
 
 MIT
